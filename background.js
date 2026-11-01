@@ -1,20 +1,20 @@
 chrome.runtime.onInstalled.addListener(() => {
   chrome.contextMenus.create({
     id: "tab-splitter-parent",
-    title: "Tab Splitter",
+    title: "Tab Mover",
     contexts: ["all"],
   });
 
   chrome.contextMenus.create({
     id: "split-current-window",
     parentId: "tab-splitter-parent",
-    title: "Split tabs by domain (Current Window)",
+    title: "Move this domain's tabs to a new window (Current Window)",
     contexts: ["all"],
   });
   chrome.contextMenus.create({
     id: "split-all-windows",
     parentId: "tab-splitter-parent",
-    title: "Split tabs by domain (All Windows)",
+    title: "Move this domain's tabs to a new window (All Windows)",
     contexts: ["all"],
   });
   chrome.contextMenus.create({

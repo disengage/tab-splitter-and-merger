@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
-  "name": "Tab Splitter & Merger",
+  "name": "Tab Mover & Merger",
   "version": "1.0",
-  "description": "Split tabs by domain or merge all windows easily.",
+  "description": "Move tabs by domain to a new window or merge all windows easily.",
   "permissions": [
     "tabs",
     "contextMenus",
