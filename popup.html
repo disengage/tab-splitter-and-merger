@@ -16,8 +16,35 @@
         --accent: #8b7cf6;
         --accent-strong: #a597ff;
         --accent-soft: rgba(139, 124, 246, 0.14);
+        --accent-glow: rgba(139, 124, 246, 0.24);
+        --accent-shadow: rgba(139, 124, 246, 0.3);
+        --accent-border: rgba(139, 124, 246, 0.4);
+        --focus-ring: #fff;
+        color-scheme: dark;
         --font: -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", sans-serif;
         --mono: "SF Mono", "JetBrains Mono", Menlo, Consolas, monospace;
+      }
+
+      @media (prefers-color-scheme: light) {
+        :root {
+          --bg: #f7f7fa;
+          --panel: #efeff4;
+          --panel-raised: #ffffff;
+          --panel-hover: #e9e8f2;
+          --line: rgba(20, 22, 40, 0.08);
+          --line-strong: rgba(20, 22, 40, 0.14);
+          --ink: #16181f;
+          --muted: #5c6373;
+          --faint: #8b91a0;
+          --accent: #6d5ce8;
+          --accent-strong: #5646d4;
+          --accent-soft: rgba(109, 92, 232, 0.1);
+          --accent-glow: rgba(109, 92, 232, 0.16);
+          --accent-shadow: rgba(109, 92, 232, 0.28);
+          --accent-border: rgba(109, 92, 232, 0.45);
+          --focus-ring: #16181f;
+          color-scheme: light;
+        }
       }
 
       * {
@@ -63,7 +90,7 @@
       .split {
         padding: 14px 14px 16px;
         background:
-          radial-gradient(110% 120% at 100% 0%, rgba(139, 124, 246, 0.24), transparent 60%),
+          radial-gradient(110% 120% at 100% 0%, var(--accent-glow), transparent 60%),
           var(--bg);
         border-bottom: 1px solid var(--line);
       }
@@ -134,7 +161,7 @@
         color: #fff;
         text-align: left;
         cursor: pointer;
-        box-shadow: 0 6px 18px rgba(139, 124, 246, 0.3);
+        box-shadow: 0 6px 18px var(--accent-shadow);
         transition:
           background 0.12s ease,
           transform 0.12s ease,
@@ -147,14 +174,14 @@
       }
 
       .split-buttons button:focus-visible {
-        outline: 2px solid #fff;
+        outline: 2px solid var(--focus-ring);
         outline-offset: 2px;
       }
 
       .split-buttons button:disabled {
         background: var(--panel-raised);
         color: var(--faint);
-        box-shadow: none;
+        box-shadow: inset 0 0 0 1px var(--line);
         cursor: not-allowed;
       }
 
@@ -224,7 +251,7 @@
 
       #btn-merge:hover:not(:disabled) {
         background: var(--panel-hover);
-        border-color: rgba(139, 124, 246, 0.4);
+        border-color: var(--accent-border);
       }
 
       #btn-merge:focus-visible {
