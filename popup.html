@@ -1,0 +1,91 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <style>
+      body {
+        width: 350px;
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        margin: 0;
+        padding: 15px;
+        background-color: #f9f9f9;
+      }
+      h3 {
+        margin-top: 0;
+        color: #333;
+        font-size: 16px;
+        border-bottom: 1px solid #ddd;
+        padding-bottom: 10px;
+      }
+      .window-item {
+        display: flex;
+        align-items: center;
+        padding: 8px;
+        margin-bottom: 5px;
+        background: white;
+        border: 1px solid #eee;
+        border-radius: 6px;
+        font-size: 13px;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+        cursor: pointer;
+        transition: background 0.2s;
+        width: 100%;
+        text-align: left;
+      }
+      .window-item:hover {
+        background: #f0f0f0;
+        border-color: #ccc;
+      }
+      .window-item .favicon {
+        width: 16px;
+        height: 16px;
+        margin-right: 10px;
+      }
+      .window-item .details {
+        flex-grow: 1;
+      }
+      .actions {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        margin-top: 15px;
+        padding-top: 15px;
+        border-top: 1px solid #ddd;
+      }
+      button {
+        cursor: pointer;
+        padding: 8px 12px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        background: #fff;
+        transition: background 0.2s;
+        font-size: 13px;
+        text-align: left;
+      }
+      button:hover {
+        background: #f0f0f0;
+      }
+      .btn-primary {
+        background: #4285f4;
+        color: white;
+        border: none;
+        font-weight: bold;
+      }
+      .btn-primary:hover {
+        background: #357ae8;
+      }
+    </style>
+  </head>
+  <body>
+    <h3>Windows Preview</h3>
+    <div id="window-list"></div>
+
+    <div class="actions">
+      <button id="btn-merge">Merge All Windows to Current</button>
+      <button id="btn-split-current">Split by Domain (Current Window)</button>
+      <button id="btn-split-all">Split by Domain (All Windows)</button>
+    </div>
+
+    <script src="popup.js"></script>
+  </body>
+</html>
