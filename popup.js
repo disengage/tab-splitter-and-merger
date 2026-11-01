@@ -1,6 +1,6 @@
 async function renderWindows() {
   const windowList = document.getElementById("window-list");
-  windowList.innerHTML = "";
+  windowList.innerHTML = ""; 
 
   const windows = await chrome.windows.getAll({ populate: true });
 
@@ -25,7 +25,14 @@ async function renderWindows() {
 
     const details = document.createElement("div");
     details.className = "details";
-    details.innerHTML = `<strong>Window ${index + 1}</strong> - ${win.tabs.length} tabs`;
+    
+    const strong = document.createElement("strong");
+    strong.textContent = `Window ${index + 1}`;
+    
+    const textNode = document.createTextNode(` - ${win.tabs.length} tabs`);
+    
+    details.appendChild(strong);
+    details.appendChild(textNode);
 
     item.appendChild(img);
     item.appendChild(details);
@@ -38,6 +45,20 @@ async function renderWindows() {
 
     windowList.appendChild(item);
   });
+}
+
+function createDetails(index, tabCount) {
+  const details = document.createElement("div");
+  details.className = "details";
+  
+  const strong = document.createElement("strong");
+  strong.textContent = `Window ${index + 1}`;
+  
+  const textNode = document.createTextNode(` - ${tabCount} tabs`);
+  
+  details.appendChild(strong);
+  details.appendChild(textNode);
+  return details;
 }
 
 document.getElementById("btn-merge").addEventListener("click", async () => {
@@ -58,7 +79,7 @@ document
       active: true,
       currentWindow: true,
     });
-    if (tab) {
+    if (tab && tab.url) {
       chrome.runtime.sendMessage(
         {
           action: "splitCurrent",
@@ -75,7 +96,7 @@ document
 
 document.getElementById("btn-split-all").addEventListener("click", async () => {
   const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
-  if (tab) {
+  if (tab && tab.url) {
     chrome.runtime.sendMessage(
       {
         action: "splitAll",

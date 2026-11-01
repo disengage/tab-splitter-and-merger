@@ -57,29 +57,34 @@ chrome.contextMenus.onClicked.addListener((info, tab) => {
 });
 
 async function splitTabsByDomain(windowId, currentUrl, scope) {
-  if (!currentUrl) return;
+  if (!currentUrl || !currentUrl.startsWith('http')) return;
+  
   try {
     const domain = new URL(currentUrl).hostname;
-
     let tabsToMove = [];
 
     if (scope === "current") {
+      const windowExists = await chrome.windows.get(windowId).catch(() => null);
+      if (!windowExists) return;
+
       const tabs = await chrome.tabs.query({ windowId: windowId });
       tabsToMove = tabs.filter(
-        (t) => t.url && new URL(t.url).hostname === domain,
+        (t) => t.url && t.url.startsWith('http') && new URL(t.url).hostname === domain,
       );
     } else {
       const tabs = await chrome.tabs.query({});
       tabsToMove = tabs.filter(
-        (t) => t.url && new URL(t.url).hostname === domain,
+        (t) => t.url && t.url.startsWith('http') && new URL(t.url).hostname === domain,
       );
     }
 
-    if (tabsToMove.length > 0) {
+    if (tabsToMove.length > 1) {
       const tabIds = tabsToMove.map((t) => t.id);
       const firstTab = tabIds.shift();
+      
       const newWindow = await chrome.windows.create({ tabId: firstTab });
-      if (tabIds.length > 0) {
+      
+      if (newWindow && tabIds.length > 0) {
         await chrome.tabs.move(tabIds, { windowId: newWindow.id, index: -1 });
       }
     }
@@ -90,12 +95,21 @@ async function splitTabsByDomain(windowId, currentUrl, scope) {
 
 async function mergeAllWindows(targetWindowId) {
   try {
+    const targetWin = await chrome.windows.get(targetWindowId).catch(() => null);
+    if (!targetWin) return;
+
     const windows = await chrome.windows.getAll();
     for (const win of windows) {
       if (win.id !== targetWindowId) {
         const tabs = await chrome.tabs.query({ windowId: win.id });
         const tabIds = tabs.map((t) => t.id);
-        await chrome.tabs.move(tabIds, { windowId: targetWindowId, index: -1 });
+        
+        if (tabIds.length > 0) {
+          const stillExists = await chrome.windows.get(targetWindowId).catch(() => null);
+          if (stillExists) {
+            await chrome.tabs.move(tabIds, { windowId: targetWindowId, index: -1 });
+          }
+        }
       }
     }
   } catch (e) {
