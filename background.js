@@ -79,13 +79,28 @@ async function splitTabsByDomain(windowId, currentUrl, scope) {
     }
 
     if (tabsToMove.length > 1) {
+      const lastFocused = tabsToMove.reduce((latest, tab) => {
+        const tabTime = tab.lastAccessed || 0;
+        const latestTime = latest.lastAccessed || 0;
+        if (tabTime > latestTime) return tab;
+        if (tabTime === latestTime && tab.active && !latest.active) return tab;
+        return latest;
+      });
       const tabIds = tabsToMove.map((t) => t.id);
       const firstTab = tabIds.shift();
-      
-      const newWindow = await chrome.windows.create({ tabId: firstTab });
-      
+
+      const newWindow = await chrome.windows.create({
+        tabId: firstTab,
+        focused: true,
+      });
+
       if (newWindow && tabIds.length > 0) {
         await chrome.tabs.move(tabIds, { windowId: newWindow.id, index: -1 });
+      }
+
+      if (newWindow && lastFocused.id !== firstTab) {
+        await chrome.tabs.update(lastFocused.id, { active: true });
+        await chrome.windows.update(newWindow.id, { focused: true });
       }
     }
   } catch (e) {
