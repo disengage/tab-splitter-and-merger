@@ -1,0 +1,343 @@
+<!doctype html>
+<!--
+  1376x768 promotional cover. The product shot on the right is the REAL popup
+  (popup.html mock, dark theme) scaled up; the per-window Move / Merge buttons
+  added in v1.1.0 are ringed and tagged NEW.
+-->
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Cover</title>
+    <style>
+      :root {
+        --font: -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", sans-serif;
+        --accent: #8b7cf6;
+        --accent-strong: #a597ff;
+        --accent-deep: #6d5ce8;
+        --popup-scale: 1.35;
+        color-scheme: dark;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html,
+      body {
+        margin: 0;
+        width: 1376px;
+        height: 768px;
+        overflow: hidden;
+      }
+
+      body {
+        position: relative;
+        font-family: var(--font);
+        color: #fff;
+        -webkit-font-smoothing: antialiased;
+        background:
+          radial-gradient(46% 70% at 80% 52%, rgba(124, 104, 255, 0.5), transparent 70%),
+          radial-gradient(50% 70% at 4% 0%, rgba(92, 74, 220, 0.42), transparent 62%),
+          radial-gradient(40% 55% at 42% 112%, rgba(165, 151, 255, 0.22), transparent 62%),
+          linear-gradient(125deg, #0c0a20 0%, #141038 48%, #1c1550 100%);
+      }
+
+      /* faint dot grid, fading out toward the edges */
+      body::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background-image: radial-gradient(rgba(255, 255, 255, 0.1) 1px, transparent 1.4px);
+        background-size: 26px 26px;
+        -webkit-mask-image: radial-gradient(70% 80% at 62% 50%, #000 0%, transparent 78%);
+        mask-image: radial-gradient(70% 80% at 62% 50%, #000 0%, transparent 78%);
+      }
+
+      svg {
+        display: block;
+        fill: none;
+        stroke: currentColor;
+        stroke-width: 2;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+      }
+
+      /* ---------- left: copy ---------- */
+      .copy {
+        position: absolute;
+        left: 78px;
+        top: 50%;
+        width: 640px;
+        transform: translateY(-50%);
+      }
+
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 20px;
+      }
+
+      .brand .tile {
+        display: grid;
+        place-items: center;
+        width: 72px;
+        height: 72px;
+        flex-shrink: 0;
+        border-radius: 19px;
+        background: linear-gradient(140deg, var(--accent-strong), var(--accent-deep));
+        box-shadow:
+          0 14px 34px rgba(109, 92, 232, 0.5),
+          inset 0 1px 0 rgba(255, 255, 255, 0.35);
+      }
+
+      .brand .tile svg {
+        width: 38px;
+        height: 38px;
+        stroke-width: 2.2;
+      }
+
+      .brand h1 {
+        margin: 0;
+        font-size: 54px;
+        font-weight: 750;
+        letter-spacing: -0.03em;
+        line-height: 1.05;
+        white-space: nowrap;
+      }
+
+      .tagline {
+        margin: 20px 0 28px;
+        font-size: 26px;
+        line-height: 1.3;
+        letter-spacing: -0.01em;
+        color: rgba(255, 255, 255, 0.74);
+      }
+
+      .features {
+        display: grid;
+        gap: 12px;
+        margin: 0;
+        padding: 0;
+        list-style: none;
+      }
+
+      .features li {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        padding: 13px 18px 13px 14px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 16px;
+        background: rgba(255, 255, 255, 0.055);
+      }
+
+      .features li.is-new {
+        border-color: rgba(165, 151, 255, 0.45);
+        background: rgba(139, 124, 246, 0.16);
+      }
+
+      .features .ico {
+        display: grid;
+        place-items: center;
+        width: 46px;
+        height: 46px;
+        flex-shrink: 0;
+        border-radius: 12px;
+        color: #d3ccff;
+        background: rgba(139, 124, 246, 0.24);
+      }
+
+      .features li.is-new .ico {
+        color: #fff;
+        background: var(--accent);
+      }
+
+      .features .ico svg {
+        width: 23px;
+        height: 23px;
+      }
+
+      .features strong {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-size: 22px;
+        font-weight: 650;
+        letter-spacing: -0.01em;
+      }
+
+      .features span {
+        display: block;
+        margin-top: 2px;
+        font-size: 16px;
+        color: rgba(255, 255, 255, 0.68);
+      }
+
+      .new {
+        padding: 3px 8px 2px;
+        border-radius: 999px;
+        font-size: 11px;
+        font-weight: 800;
+        letter-spacing: 0.08em;
+        line-height: 1.3;
+        color: #15103a;
+        background: linear-gradient(180deg, #d6cfff, #a597ff);
+      }
+
+      /* ---------- right: real popup, scaled ---------- */
+      .shot {
+        position: absolute;
+        right: 88px;
+        top: 50%;
+        width: calc(360px * var(--popup-scale));
+        transform: translateY(-50%);
+      }
+
+      .shot .frame {
+        position: relative;
+        height: calc(455px * var(--popup-scale));
+        border-radius: 18px;
+        overflow: hidden;
+        box-shadow:
+          0 0 0 1px rgba(255, 255, 255, 0.16),
+          0 40px 90px rgba(4, 2, 20, 0.7),
+          0 0 120px rgba(139, 124, 246, 0.38);
+      }
+
+      .shot iframe {
+        display: block;
+        width: 360px;
+        height: 455px;
+        border: 0;
+        transform: scale(var(--popup-scale));
+        transform-origin: 0 0;
+      }
+
+      .ring {
+        position: absolute;
+        border: 2.5px solid #cdc5ff;
+        border-radius: 14px;
+        box-shadow:
+          0 0 0 4px rgba(165, 151, 255, 0.26),
+          0 0 26px rgba(165, 151, 255, 0.55);
+        visibility: hidden;
+      }
+
+      .ring .new {
+        position: absolute;
+        top: -13px;
+        right: -16px;
+        font-size: 12px;
+        box-shadow: 0 4px 12px rgba(8, 4, 30, 0.5);
+      }
+    </style>
+  </head>
+  <body>
+    <div class="copy">
+      <div class="brand">
+        <div class="tile">
+          <svg viewBox="0 0 24 24">
+            <rect x="3" y="3" width="7" height="7" rx="1.5"></rect>
+            <rect x="14" y="3" width="7" height="7" rx="1.5"></rect>
+            <rect x="3" y="14" width="7" height="7" rx="1.5"></rect>
+            <rect x="14" y="14" width="7" height="7" rx="1.5"></rect>
+          </svg>
+        </div>
+        <h1>Tab Split &amp; Merger</h1>
+      </div>
+
+      <p class="tagline">Split, move, and merge tabs across your windows.</p>
+
+      <ul class="features">
+        <li>
+          <div class="ico">
+            <svg viewBox="0 0 24 24">
+              <rect x="3" y="3" width="18" height="18" rx="2"></rect>
+              <path d="M12 3v18"></path>
+            </svg>
+          </div>
+          <div>
+            <strong>Move tabs by domain</strong>
+            <span>Pull one site's tabs into a new window, from this window or all.</span>
+          </div>
+        </li>
+        <li class="is-new">
+          <div class="ico">
+            <svg viewBox="0 0 24 24">
+              <path d="M4 12h15"></path>
+              <path d="m13 6 6 6-6 6"></path>
+            </svg>
+          </div>
+          <div>
+            <strong>Move a tab to any window <em class="new" style="font-style: normal">NEW</em></strong>
+            <span>Hit Move on a window to move the tab you're on.</span>
+          </div>
+        </li>
+        <li class="is-new">
+          <div class="ico">
+            <svg viewBox="0 0 24 24">
+              <path d="m8 6 4-4 4 4"></path>
+              <path d="M12 2v10.3a4 4 0 0 1-1.17 2.83L4 22"></path>
+              <path d="m20 22-5-5"></path>
+            </svg>
+          </div>
+          <div>
+            <strong>Merge a single window <em class="new" style="font-style: normal">NEW</em></strong>
+            <span>Hit Merge on a window to pull just its tabs into this one.</span>
+          </div>
+        </li>
+        <li>
+          <div class="ico">
+            <svg viewBox="0 0 24 24">
+              <rect x="3" y="3" width="18" height="18" rx="2"></rect>
+              <path d="M12 3v18"></path>
+              <path d="M3 12h18"></path>
+            </svg>
+          </div>
+          <div>
+            <strong>Merge all windows</strong>
+            <span>One click brings every tab into the current window.</span>
+          </div>
+        </li>
+      </ul>
+    </div>
+
+    <div class="shot">
+      <div class="frame">
+        <iframe id="popup" src="popup.html?data=cws" title="Tab Split &amp; Merger popup"></iframe>
+      </div>
+      <div class="ring" id="ring"><span class="new">NEW</span></div>
+    </div>
+
+    <script>
+      const frame = document.getElementById("popup");
+      const ring = document.getElementById("ring");
+      const scale = parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--popup-scale"));
+
+      const timer = setInterval(() => {
+        const doc = frame.contentDocument;
+        if (doc?.documentElement?.dataset.ready !== "true") return;
+        clearInterval(timer);
+
+        // Fit the frame to the popup's real height.
+        const height = doc.body.offsetHeight;
+        frame.style.height = height + "px";
+        frame.parentElement.style.height = height * scale + "px";
+
+        // Ring Move / Merge on a single window row (first non-current).
+        const actions = doc.querySelector(".window-actions");
+        const r = actions.getBoundingClientRect();
+        const pad = 5;
+        Object.assign(ring.style, {
+          left: (r.left - pad) * scale + "px",
+          top: (r.top - pad) * scale + "px",
+          width: (r.width + pad * 2) * scale + "px",
+          height: (r.height + pad * 2) * scale + "px",
+          visibility: "visible",
+        });
+
+        document.documentElement.dataset.ready = "true";
+      }, 30);
+    </script>
+  </body>
+</html>

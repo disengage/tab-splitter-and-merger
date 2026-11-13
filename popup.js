@@ -127,8 +127,8 @@ async function renderWindows() {
       actions.className = "window-actions";
       actions.append(
         createRowAction(
-          "Send",
-          blocked ? blockedTitle : "Send this tab here",
+          "Move",
+          blocked ? blockedTitle : "Move this tab here",
           blocked,
           () => sendCurrentTabTo(win.id),
         ),

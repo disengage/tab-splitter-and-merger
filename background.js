@@ -1,7 +1,7 @@
 chrome.runtime.onInstalled.addListener(() => {
   chrome.contextMenus.create({
     id: "tab-splitter-parent",
-    title: "Tab Mover",
+    title: "Tab Split & Merger",
     contexts: ["all"],
   });
 
