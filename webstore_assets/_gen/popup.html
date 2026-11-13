@@ -3,18 +3,26 @@
   Renders the REAL extension popup (../../popup.html + ../../popup.js) with a
   fake chrome.* API, so store assets always match the shipped UI.
   Serve the repo root over HTTP, then open /webstore_assets/_gen/popup.html
+
+  Query params:
+    ?data=cws|todo   sample window set (see chrome-stub.js)
+    ?theme=dark      force the dark theme regardless of the OS / emulated colour scheme
 -->
 <meta charset="utf-8" />
 <script>
   (async () => {
     const source = await (await fetch("/popup.html", { cache: "no-store" })).text();
-    const html = source
+    let html = source
       .replace("<head>", '<head><base href="/" />')
       .replace(
         '<script src="popup.js"><\/script>',
         '<script src="/webstore_assets/_gen/chrome-stub.js"><\/script>' +
           '<script src="/popup.js"><\/script>',
       );
+    if (new URLSearchParams(location.search).get("theme") === "dark") {
+      // Dark is the popup's default; switch off its light-mode override.
+      html = html.replace("@media (prefers-color-scheme: light)", "@media not all");
+    }
     document.open();
     document.write(html);
     document.close();
