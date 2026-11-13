@@ -1,8 +1,9 @@
 <!doctype html>
 <!--
-  1280x800 feature-list cover (captured to ../cover2.jpeg). The product shot on the right is the REAL popup
+  Feature-list cover (1280x800 stage). The product shot on the right is the REAL popup
   (popup.html mock, dark theme) scaled up; the per-window Move / Merge buttons
   added in v1.1.0 are ringed and tagged NEW.
+  Captured to ../cover2.jpeg and, via a 1320x840 viewport, to ../cover2_440x280.jpeg.
 -->
 <html lang="en">
   <head>
@@ -25,8 +26,8 @@
       html,
       body {
         margin: 0;
-        width: 1280px;
-        height: 800px;
+        width: 100%;
+        height: 100%;
         overflow: hidden;
       }
 
@@ -42,8 +43,19 @@
           linear-gradient(125deg, #0c0a20 0%, #141038 48%, #1c1550 100%);
       }
 
+      /* Fixed 1280x800 design surface; scaled to fit the capture viewport. */
+      .stage {
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        width: 1280px;
+        height: 800px;
+        transform: translate(-50%, -50%);
+        overflow: hidden;
+      }
+
       /* faint dot grid, fading out toward the edges */
-      body::before {
+      .stage::before {
         content: "";
         position: absolute;
         inset: 0;
@@ -51,6 +63,7 @@
         background-size: 26px 26px;
         -webkit-mask-image: radial-gradient(70% 80% at 62% 50%, #000 0%, transparent 78%);
         mask-image: radial-gradient(70% 80% at 62% 50%, #000 0%, transparent 78%);
+        pointer-events: none;
       }
 
       svg {
@@ -233,83 +246,94 @@
     </style>
   </head>
   <body>
-    <div class="copy">
-      <div class="brand">
-        <div class="tile">
-          <svg viewBox="0 0 24 24">
-            <rect x="3" y="3" width="7" height="7" rx="1.5"></rect>
-            <rect x="14" y="3" width="7" height="7" rx="1.5"></rect>
-            <rect x="3" y="14" width="7" height="7" rx="1.5"></rect>
-            <rect x="14" y="14" width="7" height="7" rx="1.5"></rect>
-          </svg>
+    <div class="stage">
+      <div class="copy">
+        <div class="brand">
+          <div class="tile">
+            <svg viewBox="0 0 24 24">
+              <rect x="3" y="3" width="7" height="7" rx="1.5"></rect>
+              <rect x="14" y="3" width="7" height="7" rx="1.5"></rect>
+              <rect x="3" y="14" width="7" height="7" rx="1.5"></rect>
+              <rect x="14" y="14" width="7" height="7" rx="1.5"></rect>
+            </svg>
+          </div>
+          <h1>Tab Split &amp; Merger</h1>
         </div>
-        <h1>Tab Split &amp; Merger</h1>
+
+        <p class="tagline">Split, move, and merge tabs across your windows.</p>
+
+        <ul class="features">
+          <li>
+            <div class="ico">
+              <svg viewBox="0 0 24 24">
+                <rect x="3" y="3" width="18" height="18" rx="2"></rect>
+                <path d="M12 3v18"></path>
+              </svg>
+            </div>
+            <div>
+              <strong>Move tabs by domain</strong>
+              <span>Pull one site's tabs into a new window, from this window or all.</span>
+            </div>
+          </li>
+          <li class="is-new">
+            <div class="ico">
+              <svg viewBox="0 0 24 24">
+                <path d="M4 12h15"></path>
+                <path d="m13 6 6 6-6 6"></path>
+              </svg>
+            </div>
+            <div>
+              <strong>Move a tab to any window <em class="new" style="font-style: normal">NEW</em></strong>
+              <span>Hit Move on a window to move the tab you're on.</span>
+            </div>
+          </li>
+          <li class="is-new">
+            <div class="ico">
+              <svg viewBox="0 0 24 24">
+                <path d="m8 6 4-4 4 4"></path>
+                <path d="M12 2v10.3a4 4 0 0 1-1.17 2.83L4 22"></path>
+                <path d="m20 22-5-5"></path>
+              </svg>
+            </div>
+            <div>
+              <strong>Merge a single window <em class="new" style="font-style: normal">NEW</em></strong>
+              <span>Hit Merge on a window to pull just its tabs into this one.</span>
+            </div>
+          </li>
+          <li>
+            <div class="ico">
+              <svg viewBox="0 0 24 24">
+                <rect x="3" y="3" width="18" height="18" rx="2"></rect>
+                <path d="M12 3v18"></path>
+                <path d="M3 12h18"></path>
+              </svg>
+            </div>
+            <div>
+              <strong>Merge all windows</strong>
+              <span>One click brings every tab into the current window.</span>
+            </div>
+          </li>
+        </ul>
       </div>
 
-      <p class="tagline">Split, move, and merge tabs across your windows.</p>
-
-      <ul class="features">
-        <li>
-          <div class="ico">
-            <svg viewBox="0 0 24 24">
-              <rect x="3" y="3" width="18" height="18" rx="2"></rect>
-              <path d="M12 3v18"></path>
-            </svg>
-          </div>
-          <div>
-            <strong>Move tabs by domain</strong>
-            <span>Pull one site's tabs into a new window, from this window or all.</span>
-          </div>
-        </li>
-        <li class="is-new">
-          <div class="ico">
-            <svg viewBox="0 0 24 24">
-              <path d="M4 12h15"></path>
-              <path d="m13 6 6 6-6 6"></path>
-            </svg>
-          </div>
-          <div>
-            <strong>Move a tab to any window <em class="new" style="font-style: normal">NEW</em></strong>
-            <span>Hit Move on a window to move the tab you're on.</span>
-          </div>
-        </li>
-        <li class="is-new">
-          <div class="ico">
-            <svg viewBox="0 0 24 24">
-              <path d="m8 6 4-4 4 4"></path>
-              <path d="M12 2v10.3a4 4 0 0 1-1.17 2.83L4 22"></path>
-              <path d="m20 22-5-5"></path>
-            </svg>
-          </div>
-          <div>
-            <strong>Merge a single window <em class="new" style="font-style: normal">NEW</em></strong>
-            <span>Hit Merge on a window to pull just its tabs into this one.</span>
-          </div>
-        </li>
-        <li>
-          <div class="ico">
-            <svg viewBox="0 0 24 24">
-              <rect x="3" y="3" width="18" height="18" rx="2"></rect>
-              <path d="M12 3v18"></path>
-              <path d="M3 12h18"></path>
-            </svg>
-          </div>
-          <div>
-            <strong>Merge all windows</strong>
-            <span>One click brings every tab into the current window.</span>
-          </div>
-        </li>
-      </ul>
-    </div>
-
-    <div class="shot">
-      <div class="frame">
-        <iframe id="popup" src="popup.html?data=cws&amp;theme=dark" title="Tab Split &amp; Merger popup"></iframe>
+      <div class="shot">
+        <div class="frame">
+          <iframe id="popup" src="popup.html?data=cws&amp;theme=dark" title="Tab Split &amp; Merger popup"></iframe>
+        </div>
+        <div class="ring" id="ring"><span class="new">NEW</span></div>
       </div>
-      <div class="ring" id="ring"><span class="new">NEW</span></div>
     </div>
 
     <script>
+      // Scale the fixed 1280x800 stage to whatever viewport the page is opened / captured in.
+      const stage = document.querySelector(".stage");
+      const fitStage = () => {
+        const s = Math.min(innerWidth / stage.offsetWidth, innerHeight / stage.offsetHeight);
+        stage.style.transform = `translate(-50%, -50%) scale(${s})`;
+      };
+      fitStage();
+      addEventListener("resize", fitStage);
+
       const frame = document.getElementById("popup");
       const ring = document.getElementById("ring");
       const scale = parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--popup-scale"));
@@ -325,6 +349,7 @@
         frame.parentElement.style.height = height * scale + "px";
 
         // Ring Move / Merge on a single window row (first non-current).
+        // Rect is iframe-local; multiply by popup scale (iframe CSS transform).
         const actions = doc.querySelector(".window-actions");
         const r = actions.getBoundingClientRect();
         const pad = 5;

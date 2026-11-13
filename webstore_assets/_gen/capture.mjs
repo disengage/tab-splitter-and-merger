@@ -27,12 +27,14 @@ const jobs = [
   // Chrome Web Store screenshots: exactly 1280x800, 24-bit PNG.
   { name: "ss_light.png", url: "/scene.html", width: 1280, height: 800, scheme: "light", scale: 1 },
   { name: "ss_dark.png", url: "/scene.html", width: 1280, height: 800, scheme: "dark", scale: 1 },
-  // Covers: all 1280x800.
+  // Covers: 1280x800 marquee + 440x280 small promo tile (same HTML, different viewport).
+  // 440x280 is slightly taller than 16:10, so the page is opened at 3x that size
+  // (the 1280x800 stage scales to fit, the background fills the rest).
   { name: "cover.jpeg", url: "/cover_classic.html", width: 1280, height: 800, scheme: "dark", scale: 2, out: [1280, 800] },
+  { name: "cover_440x280.jpeg", url: "/cover_classic.html", width: 1320, height: 840, scheme: "dark", scale: 2, out: [440, 280] },
   { name: "cover2.jpeg", url: "/cover.html", width: 1280, height: 800, scheme: "dark", scale: 2, out: [1280, 800] },
+  { name: "cover2_440x280.jpeg", url: "/cover.html", width: 1320, height: 840, scheme: "dark", scale: 2, out: [440, 280] },
   { name: "cover_landing.png", url: "/cover_landing.html", width: 1280, height: 800, scheme: "dark", scale: 2, out: [1280, 800] },
-  // Small promo tile. 440x280 is slightly taller than 16:10, so the page is opened at
-  // 3x that size (the 1280x800 stage scales to fit, the background fills the rest).
   { name: "cover_landing_440x280.png", url: "/cover_landing.html", width: 1320, height: 840, scheme: "dark", scale: 2, out: [440, 280] },
 ];
 
