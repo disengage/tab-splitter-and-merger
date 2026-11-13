@@ -27,7 +27,13 @@ chrome.runtime.onInstalled.addListener(() => {
 
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   if (request.action === "merge") {
-    mergeAllWindows(request.windowId).then(() =>
+    mergeWindows(request.windowId, request.sourceWindowIds).then(() =>
+      sendResponse({ status: "done" }),
+    );
+    return true;
+  }
+  if (request.action === "moveTab") {
+    moveTabToWindow(request.tabId, request.targetWindowId).then(() =>
       sendResponse({ status: "done" }),
     );
     return true;
@@ -109,25 +115,53 @@ async function splitTabsByDomain(windowId, currentUrl, scope) {
 }
 
 async function mergeAllWindows(targetWindowId) {
+  return mergeWindows(targetWindowId);
+}
+
+async function mergeWindows(targetWindowId, sourceWindowIds) {
   try {
     const targetWin = await chrome.windows.get(targetWindowId).catch(() => null);
     if (!targetWin) return;
 
-    const windows = await chrome.windows.getAll();
-    for (const win of windows) {
-      if (win.id !== targetWindowId) {
-        const tabs = await chrome.tabs.query({ windowId: win.id });
-        const tabIds = tabs.map((t) => t.id);
-        
-        if (tabIds.length > 0) {
-          const stillExists = await chrome.windows.get(targetWindowId).catch(() => null);
-          if (stillExists) {
-            await chrome.tabs.move(tabIds, { windowId: targetWindowId, index: -1 });
-          }
-        }
-      }
+    let sourceIds = sourceWindowIds;
+    if (!sourceIds) {
+      const windows = await chrome.windows.getAll();
+      sourceIds = windows.map((win) => win.id);
+    }
+
+    for (const sourceId of sourceIds) {
+      if (sourceId === targetWindowId) continue;
+
+      const tabs = await chrome.tabs.query({ windowId: sourceId });
+      const tabIds = tabs.map((t) => t.id);
+      if (tabIds.length === 0) continue;
+
+      const stillExists = await chrome.windows.get(targetWindowId).catch(() => null);
+      if (!stillExists) return;
+
+      await chrome.tabs.move(tabIds, { windowId: targetWindowId, index: -1 });
     }
   } catch (e) {
     console.error("Error merging windows:", e);
+  }
+}
+
+async function moveTabToWindow(tabId, targetWindowId) {
+  try {
+    const [tab, targetWin] = await Promise.all([
+      chrome.tabs.get(tabId).catch(() => null),
+      chrome.windows.get(targetWindowId).catch(() => null),
+    ]);
+    if (!tab || !targetWin || tab.windowId === targetWindowId) return;
+    if (Boolean(tab.incognito) !== Boolean(targetWin.incognito)) return;
+
+    await chrome.tabs.move(tabId, {
+      windowId: targetWindowId,
+      index: tab.pinned ? 0 : -1,
+    });
+    await chrome.tabs.update(tabId, { active: true });
+    await chrome.windows.update(targetWindowId, { focused: true });
+  } catch (e) {
+    console.error("Error moving tab:", e);
   }
 }
