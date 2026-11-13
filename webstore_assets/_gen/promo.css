@@ -1,0 +1,141 @@
+/* Shared base for the promo canvases (cover_classic.html, cover_landing.html). */
+:root {
+  --font: -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", sans-serif;
+  --accent: #8b7cf6;
+  --accent-strong: #a597ff;
+  --accent-deep: #6d5ce8;
+  --lilac: #cfc8ff;
+  --text: #f1effc;
+  --text-soft: #c4c1de;
+  color-scheme: dark;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+body {
+  position: relative;
+  font-family: var(--font);
+  color: var(--text);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Fixed 1280x800 design surface; promo.js scales it to fit the viewport. */
+.stage {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 1280px;
+  height: 800px;
+  transform: translate(-50%, -50%);
+}
+
+/* Inline SVG icon slot, filled by promo.js from data-icon. */
+.ic {
+  display: inline-block;
+  flex-shrink: 0;
+  width: 1em;
+  height: 1em;
+  line-height: 0;
+}
+
+.ic svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+/* App icon tile. */
+.app-tile {
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  color: #fff;
+  background: linear-gradient(140deg, #9a8cff, #6d5ce8);
+  box-shadow:
+    0 14px 34px rgba(109, 92, 232, 0.45),
+    inset 0 1px 0 rgba(255, 255, 255, 0.35);
+}
+
+/* White rounded tile behind a site mark. */
+.site-tile {
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  background: #fff;
+  box-shadow: 0 1px 3px rgba(10, 8, 40, 0.35);
+}
+
+/* Arrow pointer + click sparks. */
+.cursor {
+  position: absolute;
+  z-index: 20;
+  fill: #3a2f9b;
+  stroke: #ece8ff;
+  filter: drop-shadow(0 3px 5px rgba(6, 4, 30, 0.55));
+}
+
+.sparks {
+  position: absolute;
+  z-index: 20;
+  color: var(--accent);
+}
+
+/* Toolbar bits shared by the browser mocks. */
+.tool {
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  border-radius: 50%;
+  color: #c9c7d6;
+}
+
+.tool.pressed {
+  color: var(--accent-strong);
+  background: rgba(139, 124, 246, 0.26);
+}
+
+.tool.round {
+  background: rgba(255, 255, 255, 0.09);
+}
+
+.avatar {
+  display: grid;
+  place-items: end center;
+  flex-shrink: 0;
+  overflow: hidden;
+  border-radius: 50%;
+  color: #2d2a4d;
+  background: linear-gradient(160deg, #e9e6f5, #a9a4c9);
+}
+
+.traffic {
+  display: flex;
+  flex-shrink: 0;
+}
+
+.traffic i {
+  border-radius: 50%;
+}
+
+.traffic i:nth-child(1) {
+  background: #ff5f57;
+}
+
+.traffic i:nth-child(2) {
+  background: #febc2e;
+}
+
+.traffic i:nth-child(3) {
+  background: #28c840;
+}

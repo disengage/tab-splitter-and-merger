@@ -1,0 +1,559 @@
+<!doctype html>
+<!--
+  Classic two-panel cover (1280x800): "Move Tabs by Domain" + "Preview & Merge".
+  HTML recreation of reference/cover_classic_1376x768.jpeg. Captured to ../cover.jpeg.
+-->
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Tab Split &amp; Merger – classic cover</title>
+    <link rel="stylesheet" href="promo.css" />
+    <style>
+      body {
+        background:
+          radial-gradient(52% 62% at 0% 100%, rgba(98, 80, 230, 0.55), transparent 66%),
+          radial-gradient(52% 66% at 100% 100%, rgba(112, 92, 242, 0.62), transparent 66%),
+          radial-gradient(48% 56% at 0% 0%, rgba(84, 72, 210, 0.5), transparent 66%),
+          radial-gradient(42% 50% at 100% 0%, rgba(60, 50, 160, 0.34), transparent 66%), #11102b;
+      }
+
+      /* ---------- header ---------- */
+      .header {
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: 38px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 24px;
+      }
+
+      .header .app-tile {
+        width: 94px;
+        height: 94px;
+        border-radius: 24px;
+        font-size: 52px;
+      }
+
+      .header h1 {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        margin: 0;
+        font-size: 54px;
+        font-weight: 700;
+        letter-spacing: -0.02em;
+        line-height: 1.12;
+      }
+
+      .header h1 .ic {
+        font-size: 46px;
+        color: #4c9df5;
+      }
+
+      .header p {
+        margin: 2px 0 0 3px;
+        font-size: 31px;
+        line-height: 1.2;
+        color: #b4b0d4;
+      }
+
+      /* ---------- panels ---------- */
+      .panel {
+        position: absolute;
+        top: 178px;
+        width: 540px;
+        height: 584px;
+        padding: 30px 36px 0;
+        border: 1.5px solid rgba(150, 140, 240, 0.3);
+        border-radius: 32px;
+        background: linear-gradient(180deg, rgba(16, 15, 40, 0.8), rgba(14, 13, 36, 0.62));
+        box-shadow:
+          inset 0 1px 0 rgba(255, 255, 255, 0.06),
+          0 30px 60px rgba(5, 4, 25, 0.35);
+        text-align: center;
+      }
+
+      .panel.left {
+        left: 86px;
+      }
+
+      .panel.right {
+        left: 654px;
+      }
+
+      .panel h2 {
+        margin: 0;
+        font-size: 36px;
+        font-weight: 700;
+        letter-spacing: -0.01em;
+        line-height: 1.2;
+        color: #e8e6f8;
+      }
+
+      .caption {
+        margin: 0;
+        font-size: 27px;
+        line-height: 1.3;
+        color: #b9b6d2;
+      }
+
+      /* ---------- left: windows illustration ---------- */
+      .illus {
+        position: relative;
+        height: 240px;
+        margin-top: 14px;
+      }
+
+      .win {
+        position: absolute;
+        overflow: hidden;
+        border-radius: 12px 12px 0 0;
+        -webkit-mask-image: linear-gradient(180deg, #000 52%, transparent 100%);
+        mask-image: linear-gradient(180deg, #000 52%, transparent 100%);
+      }
+
+      .win .bar {
+        position: relative;
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        height: 24px;
+        padding-left: 10px;
+        background: rgba(122, 118, 164, 0.78);
+      }
+
+      .win .bar i {
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+      }
+
+      .win .bar i:nth-child(1) {
+        background: #ff5f57;
+      }
+      .win .bar i:nth-child(2) {
+        background: #febc2e;
+      }
+      .win .bar i:nth-child(3) {
+        background: #28c840;
+      }
+
+      /* the tab shape sitting on the title bar */
+      .win .bar::after {
+        content: "";
+        position: absolute;
+        left: 34%;
+        bottom: 0;
+        width: 46%;
+        height: 15px;
+        border-radius: 8px 8px 0 0;
+        background: rgba(178, 174, 210, 0.9);
+      }
+
+      .win .body {
+        display: flex;
+        align-items: flex-start;
+        justify-content: center;
+        gap: 12px;
+        height: 100%;
+        padding-top: 20px;
+        background: linear-gradient(180deg, rgba(178, 174, 210, 0.9), rgba(150, 144, 200, 0.55));
+      }
+
+      .win .site-tile {
+        width: 34px;
+        height: 34px;
+        border-radius: 8px;
+        font-size: 24px;
+      }
+
+      .win.back {
+        top: 16px;
+        width: 160px;
+        height: 190px;
+      }
+
+      .win.back.a {
+        left: 0;
+      }
+
+      .win.back.b {
+        right: 0;
+      }
+
+      .front-glow {
+        position: absolute;
+        left: 126px;
+        top: 76px;
+        width: 216px;
+        height: 150px;
+        border-radius: 18px;
+        background: rgba(139, 124, 246, 0.55);
+        filter: blur(26px);
+      }
+
+      .win.front {
+        left: 130px;
+        top: 82px;
+        width: 208px;
+        height: 158px;
+        border: 2px solid rgba(226, 219, 255, 0.95);
+        border-bottom: 0;
+        border-radius: 14px 14px 0 0;
+        -webkit-mask-image: linear-gradient(180deg, #000 62%, transparent 100%);
+        mask-image: linear-gradient(180deg, #000 62%, transparent 100%);
+      }
+
+      .win.front .bar {
+        background: rgba(196, 189, 240, 0.95);
+      }
+
+      .win.front .bar::after {
+        background: rgba(226, 221, 255, 0.98);
+      }
+
+      .win.front .body {
+        gap: 10px;
+        padding-top: 22px;
+        background: linear-gradient(180deg, rgba(226, 221, 255, 0.98), rgba(160, 148, 236, 0.6));
+      }
+
+      .win.front .site-tile {
+        width: 50px;
+        height: 50px;
+        border-radius: 11px;
+        font-size: 36px;
+      }
+
+      .flow {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        fill: none;
+        stroke: #7d6df2;
+        stroke-width: 6;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+        filter: drop-shadow(0 0 8px rgba(125, 109, 242, 0.55));
+      }
+
+      .flow circle {
+        fill: #2b2568;
+        stroke-width: 5;
+      }
+
+      /* ---------- left: pills ---------- */
+      .pill {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        height: 68px;
+        margin-top: 14px;
+        padding: 0 26px 0 24px;
+        border: 1.5px solid rgba(255, 255, 255, 0.1);
+        border-radius: 18px;
+        background: rgba(255, 255, 255, 0.07);
+        font-size: 31px;
+        font-weight: 700;
+        letter-spacing: -0.01em;
+        color: #e4e1f6;
+      }
+
+      .pill b {
+        color: var(--accent-strong);
+      }
+
+      .pill .ic {
+        font-size: 40px;
+        color: var(--accent-strong);
+      }
+
+      .pill.on {
+        margin-top: 0;
+        border-color: rgba(170, 157, 255, 0.62);
+        background: linear-gradient(180deg, rgba(124, 108, 240, 0.5), rgba(104, 90, 214, 0.36));
+        box-shadow: 0 0 34px rgba(124, 108, 240, 0.4);
+      }
+
+      .panel.left .caption {
+        margin-top: 22px;
+      }
+
+      /* ---------- right: toolbar + window list ---------- */
+      .frag {
+        position: relative;
+        width: 416px;
+        margin: 22px auto 0;
+        border: 1px solid rgba(255, 255, 255, 0.16);
+        border-radius: 18px;
+        background: #1a1930;
+        box-shadow: 0 18px 40px rgba(4, 3, 22, 0.5);
+        text-align: left;
+      }
+
+      .frag .bar {
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        gap: 10px;
+        height: 56px;
+        padding: 0 14px;
+        border-radius: 17px 17px 0 0;
+        background: #2b2a45;
+      }
+
+      .frag .tool {
+        width: 38px;
+        height: 38px;
+        font-size: 22px;
+      }
+
+      .frag .tool.star {
+        font-size: 24px;
+        margin-right: 2px;
+      }
+
+      .frag .avatar {
+        width: 34px;
+        height: 34px;
+        margin-left: 2px;
+        font-size: 28px;
+      }
+
+      .rows {
+        padding: 10px;
+      }
+
+      .row {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        height: 62px;
+        padding: 0 16px 0 14px;
+        border-radius: 13px;
+        font-size: 23px;
+        font-weight: 500;
+        color: #e4e2f2;
+      }
+
+      .row.on {
+        background: rgba(139, 124, 246, 0.26);
+      }
+
+      .row .mark {
+        display: grid;
+        place-items: center;
+        width: 38px;
+        height: 38px;
+        font-size: 34px;
+      }
+
+      .row .site-tile {
+        width: 38px;
+        height: 38px;
+        border-radius: 9px;
+        font-size: 28px;
+      }
+
+      .row .count {
+        margin-left: auto;
+        font-size: 22px;
+        font-weight: 400;
+        color: #a092f8;
+      }
+
+      .frag .cursor {
+        right: -38px;
+        top: 86px;
+        font-size: 44px;
+      }
+
+      .frag .sparks {
+        right: -44px;
+        top: 62px;
+        font-size: 32px;
+      }
+
+      .tip {
+        position: absolute;
+        right: -56px;
+        top: 142px;
+        z-index: 10;
+        padding: 10px 18px;
+        border-radius: 11px;
+        background: #4b40ba;
+        box-shadow: 0 10px 24px rgba(8, 5, 40, 0.5);
+        font-size: 20px;
+        font-weight: 600;
+        white-space: nowrap;
+        color: #f3f1ff;
+      }
+
+      .tip::before {
+        content: "";
+        position: absolute;
+        left: 96px;
+        top: -7px;
+        width: 16px;
+        height: 16px;
+        border-radius: 3px;
+        background: inherit;
+        transform: rotate(45deg);
+      }
+
+      /* ---------- right: Merge All Windows ---------- */
+      .merge {
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 16px;
+        width: 444px;
+        height: 78px;
+        margin: 42px auto 0;
+        border: 2px solid rgba(176, 164, 255, 0.82);
+        border-radius: 17px;
+        background: linear-gradient(180deg, rgba(139, 124, 246, 0.26), rgba(139, 124, 246, 0.12));
+        box-shadow:
+          0 0 36px rgba(139, 124, 246, 0.6),
+          inset 0 0 22px rgba(139, 124, 246, 0.22);
+        font-size: 32px;
+        font-weight: 700;
+        letter-spacing: -0.01em;
+        color: #ebe8fb;
+      }
+
+      .merge > .ic {
+        font-size: 34px;
+        color: var(--accent-strong);
+      }
+
+      .merge .cursor {
+        right: -18px;
+        bottom: -30px;
+        font-size: 46px;
+      }
+
+      .panel.right .caption {
+        margin-top: 30px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="stage">
+      <header class="header">
+        <div class="app-tile"><i class="ic" data-icon="grid"></i></div>
+        <div>
+          <h1>Tab Split &amp; Merger <i class="ic" data-icon="globe"></i></h1>
+          <p>Powerful Tab Organization</p>
+        </div>
+      </header>
+
+      <!-- left panel -->
+      <section class="panel left">
+        <h2>Move Tabs by Domain</h2>
+
+        <div class="illus">
+          <div class="win back a">
+            <div class="bar"><i></i><i></i><i></i></div>
+            <div class="body">
+              <span class="site-tile"><i class="ic" data-icon="google"></i></span>
+              <span class="site-tile"><i class="ic" data-icon="github"></i></span>
+              <span class="site-tile"><i class="ic" data-icon="google"></i></span>
+            </div>
+          </div>
+          <div class="win back b">
+            <div class="bar"><i></i><i></i><i></i></div>
+            <div class="body">
+              <span class="site-tile"><i class="ic" data-icon="amazon"></i></span>
+              <span class="site-tile" style="background: none; box-shadow: none; font-size: 34px"><i class="ic" data-icon="nblue"></i></span>
+              <span class="site-tile" style="background: none; box-shadow: none; font-size: 36px"><i class="ic" data-icon="youtube"></i></span>
+            </div>
+          </div>
+
+          <svg class="flow" viewBox="0 0 468 240">
+            <path d="M123 30C150 60 196 54 216 60q18 6 18 26"></path>
+            <path d="M318 60c-30 0-58-2-68 2q-16 6-16 24"></path>
+            <path d="M234 86V12"></path>
+            <path d="M217 29 234 10l17 19"></path>
+            <circle cx="120" cy="27" r="7.5"></circle>
+          </svg>
+
+          <div class="front-glow"></div>
+          <div class="win front">
+            <div class="bar"><i></i><i></i><i></i></div>
+            <div class="body">
+              <span class="site-tile"><i class="ic" data-icon="google"></i></span>
+              <span class="site-tile"><i class="ic" data-icon="amazon"></i></span>
+              <span class="site-tile" style="background: none; box-shadow: none; font-size: 50px"><i class="ic" data-icon="nblue"></i></span>
+            </div>
+          </div>
+        </div>
+
+        <div class="pill on">
+          <span>(This Window: <b>6</b>)</span>
+          <i class="ic" data-icon="arrowUpRight"></i>
+        </div>
+        <div class="pill">
+          <span>(All Windows: <b>15</b>)</span>
+          <i class="ic" data-icon="arrowUpRight"></i>
+        </div>
+
+        <p class="caption">Instantly moves all tabs of<br />the same domain.</p>
+      </section>
+
+      <!-- right panel -->
+      <section class="panel right">
+        <h2>Preview &amp; Merge</h2>
+
+        <div class="frag">
+          <div class="bar">
+            <span class="tool star"><i class="ic" data-icon="star"></i></span>
+            <span class="tool pressed"><i class="ic" data-icon="grid"></i></span>
+            <span class="tool round"><i class="ic" data-icon="dots"></i></span>
+            <span class="avatar"><i class="ic" data-icon="person"></i></span>
+          </div>
+          <div class="rows">
+            <div class="row on">
+              <span class="site-tile"><i class="ic" data-icon="chrome"></i></span>
+              Window 1 (current)
+              <span class="count">14 tabs</span>
+            </div>
+            <div class="row">
+              <span class="mark"><i class="ic" data-icon="youtube"></i></span>
+              Window 2
+              <span class="count">3 tabs</span>
+            </div>
+            <div class="row">
+              <span class="mark"><i class="ic" data-icon="facebook"></i></span>
+              Window 3
+              <span class="count">1 tab</span>
+            </div>
+          </div>
+
+          <i class="ic sparks" data-icon="sparks"></i>
+          <i class="ic cursor" data-icon="cursor"></i>
+          <div class="tip">Quick Jump (Focus)</div>
+        </div>
+
+        <div class="merge">
+          <i class="ic" data-icon="merge"></i>
+          Merge All Windows
+          <i class="ic cursor" data-icon="cursor"></i>
+        </div>
+
+        <p class="caption">Combine all windows with<br />one click.</p>
+      </section>
+    </div>
+
+    <script src="promo.js"></script>
+    <script>
+      document.fonts.ready.then(() => {
+        document.documentElement.dataset.ready = "true";
+      });
+    </script>
+  </body>
+</html>

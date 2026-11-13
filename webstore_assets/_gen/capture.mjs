@@ -1,9 +1,9 @@
 // Regenerates the Chrome Web Store assets in ../ from the mock pages in this folder.
-// The mocks load the real ../../popup.html + ../../popup.js, so the output tracks the shipped UI.
+// The popup mocks load the real ../../popup.html + ../../popup.js, so they track the shipped UI.
 //
 //   1. From the repo root:   python3 -m http.server 8765 --bind 127.0.0.1
 //   2. In this folder:       npm install --no-save playwright-core
-//                            node capture.mjs [name-filter]     e.g. `node capture.mjs ss_`
+//                            node capture.mjs [name-filter]     e.g. `node capture.mjs cover`
 //
 // Needs a Chromium-based browser; set BROWSER_PATH if it is not the default below.
 import { chromium } from "playwright-core";
@@ -17,6 +17,9 @@ const BROWSER_PATH =
   process.env.BROWSER_PATH ||
   "/Applications/Brave Browser.app/Contents/MacOS/Brave Browser";
 
+// width/height = viewport in CSS px, scale = device pixel ratio.
+// out = final pixel size; the capture is supersampled and downsized to it with `sips`.
+// The format follows the file extension.
 const jobs = [
   // Standalone popup, exported at 2x (720px wide) for sharpness.
   { name: "popup_light.png", url: "/popup.html?data=cws", width: 360, height: 480, scheme: "light", scale: 2, fitBody: true },
@@ -24,16 +27,21 @@ const jobs = [
   // Chrome Web Store screenshots: exactly 1280x800, 24-bit PNG.
   { name: "ss_light.png", url: "/scene.html", width: 1280, height: 800, scheme: "light", scale: 1 },
   { name: "ss_dark.png", url: "/scene.html", width: 1280, height: 800, scheme: "dark", scale: 1 },
-  // Cover: 1376x768 JPEG (rendered at 2x and downsampled when `sips` is available).
-  { name: "cover.jpeg", url: "/cover.html", width: 1376, height: 768, scheme: "dark", scale: 2, jpeg: true },
+  // Covers: all 1280x800.
+  { name: "cover.jpeg", url: "/cover_classic.html", width: 1280, height: 800, scheme: "dark", scale: 2, out: [1280, 800] },
+  { name: "cover2.jpeg", url: "/cover.html", width: 1280, height: 800, scheme: "dark", scale: 2, out: [1280, 800] },
+  { name: "cover_landing.png", url: "/cover_landing.html", width: 1280, height: 800, scheme: "dark", scale: 2, out: [1280, 800] },
+  // Small promo tile. 440x280 is slightly taller than 16:10, so the page is opened at
+  // 3x that size (the 1280x800 stage scales to fit, the background fills the rest).
+  { name: "cover_landing_440x280.png", url: "/cover_landing.html", width: 1320, height: 840, scheme: "dark", scale: 2, out: [440, 280] },
 ];
 
 const filter = process.argv[2];
 const browser = await chromium.launch({ executablePath: BROWSER_PATH, headless: true });
 
-async function open(job, height, scale = job.scale) {
+async function open(job, width, height, scale) {
   const context = await browser.newContext({
-    viewport: { width: job.width, height },
+    viewport: { width, height },
     deviceScaleFactor: scale,
     colorScheme: job.scheme,
   });
@@ -49,8 +57,8 @@ async function open(job, height, scale = job.scale) {
   return { context, page };
 }
 
-async function shoot(job, height, scale, options) {
-  const { context, page } = await open(job, height, scale);
+async function shoot(job, width, height, scale, options) {
+  const { context, page } = await open(job, width, height, scale);
   await page.screenshot(options);
   await context.close();
 }
@@ -61,27 +69,34 @@ try {
     let height = job.height;
     if (job.fitBody) {
       // Measure first, then reopen at the exact size (resizing in place can glitch).
-      const probe = await open(job, height);
+      const probe = await open(job, job.width, height, job.scale);
       height = await probe.page.evaluate(() => document.body.offsetHeight);
       await probe.context.close();
     }
 
     const target = OUT + job.name;
+    const jpeg = /\.jpe?g$/.test(job.name);
     let size = `${job.width * job.scale}x${height * job.scale}`;
-    if (!job.jpeg) {
-      await shoot(job, height, job.scale, { path: target, type: "png" });
+
+    if (!job.out) {
+      await shoot(job, job.width, height, job.scale, { path: target, type: "png" });
     } else {
-      size = `${job.width}x${height}`;
+      const [outWidth, outHeight] = job.out;
+      size = `${outWidth}x${outHeight}`;
       const hires = fileURLToPath(new URL("./.hires.png", import.meta.url));
       try {
-        await shoot(job, height, job.scale, { path: hires, type: "png" });
+        await shoot(job, job.width, height, job.scale, { path: hires, type: "png" });
         execFileSync("sips", [
-          "-s", "format", "jpeg", "-s", "formatOptions", "92",
-          "-z", String(height), String(job.width), hires, "--out", target,
+          "-s", "format", jpeg ? "jpeg" : "png",
+          ...(jpeg ? ["-s", "formatOptions", "92"] : []),
+          "-z", String(outHeight), String(outWidth), hires, "--out", target,
         ], { stdio: "ignore" });
       } catch {
-        // No `sips` (non-macOS): render straight to JPEG at 1x instead.
-        await shoot(job, height, 1, { path: target, type: "jpeg", quality: 92 });
+        // No `sips` (non-macOS): render straight at the output size instead.
+        await shoot(job, outWidth, outHeight, 1, {
+          path: target,
+          ...(jpeg ? { type: "jpeg", quality: 92 } : { type: "png" }),
+        });
       } finally {
         rmSync(hires, { force: true });
       }

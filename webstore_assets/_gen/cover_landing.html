@@ -1,0 +1,970 @@
+<!doctype html>
+<!--
+  Landing promo (1280x800 stage): hero copy, browser with the context-menu actions,
+  the extension popup, and three feature cards.
+  HTML recreation of reference/cover_landing_800x500.png. The popup is the REAL one
+  (popup.html mock), so it shows the shipped UI. Captured to ../cover_landing.png and,
+  via a 1320x840 viewport, to ../cover_landing_440x280.png.
+-->
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Tab Split &amp; Merger – landing cover</title>
+    <link rel="stylesheet" href="promo.css" />
+    <style>
+      :root {
+        --popup-scale: 0.925;
+      }
+
+      body {
+        background:
+          radial-gradient(48% 62% at 0% 0%, rgba(92, 88, 190, 0.85), transparent 68%),
+          radial-gradient(46% 60% at 100% 100%, rgba(104, 86, 232, 0.8), transparent 66%),
+          radial-gradient(40% 50% at 100% 0%, rgba(58, 52, 150, 0.6), transparent 66%),
+          radial-gradient(40% 50% at 0% 100%, rgba(48, 42, 130, 0.5), transparent 66%), #141330;
+      }
+
+      /* ---------- hero copy ---------- */
+      .brand .app-tile {
+        position: absolute;
+        left: 45px;
+        top: 99px;
+        width: 77px;
+        height: 77px;
+        border-radius: 19px;
+        font-size: 43px;
+      }
+
+      .brand h1 {
+        position: absolute;
+        left: 147px;
+        top: 110px;
+        margin: 0;
+        font-size: 45px;
+        font-weight: 750;
+        letter-spacing: -0.02em;
+        line-height: 49px;
+        white-space: nowrap;
+      }
+
+      .brand h1 span {
+        display: flex;
+        align-items: center;
+        gap: 9px;
+        color: #cdc6fb;
+      }
+
+      .brand h1 .ic {
+        font-size: 37px;
+        color: #4c9df5;
+      }
+
+      .tagline {
+        position: absolute;
+        left: 45px;
+        top: 232px;
+        margin: 0;
+        font-size: 32px;
+        line-height: 41px;
+        letter-spacing: -0.005em;
+        color: #d9d6ef;
+        white-space: nowrap;
+      }
+
+      .squiggle {
+        position: absolute;
+        left: 268px;
+        top: 314px;
+        width: 100px;
+        height: 22px;
+        fill: none;
+        stroke: #7e6ef3;
+        stroke-width: 3.2;
+        stroke-linecap: round;
+      }
+
+      .checks {
+        position: absolute;
+        left: 48px;
+        top: 357px;
+        margin: 0;
+        padding: 0;
+        list-style: none;
+      }
+
+      .checks li {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        height: 37px;
+        font-size: 20px;
+        color: #e2e0f2;
+      }
+
+      .checks .ic {
+        width: 24px;
+        height: 24px;
+        padding: 4px;
+        border-radius: 50%;
+        color: #1b1742;
+        background: linear-gradient(160deg, #a092fa, #7a6aef);
+      }
+
+      /* ---------- browser 1: context menu ---------- */
+      .browser {
+        position: absolute;
+        left: 406px;
+        top: 32px;
+        width: 470px;
+        height: 444px;
+        overflow: hidden;
+        border-radius: 14px;
+        background: #33333f;
+        box-shadow:
+          0 0 0 1px rgba(255, 255, 255, 0.08),
+          0 30px 70px rgba(6, 5, 30, 0.55);
+      }
+
+      .browser .tabbar {
+        display: flex;
+        align-items: flex-end;
+        height: 45px;
+        background: #22222c;
+      }
+
+      .browser .traffic {
+        align-self: center;
+        gap: 9px;
+        padding: 0 16px 0 17px;
+      }
+
+      .browser .traffic i {
+        width: 13px;
+        height: 13px;
+      }
+
+      .browser .tab {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        width: 232px;
+        height: 37px;
+        padding: 0 12px;
+        border-radius: 11px 11px 0 0;
+        background: #33333f;
+        font-size: 14.5px;
+        font-weight: 500;
+        color: #ececf3;
+      }
+
+      .browser .tab .site-tile {
+        width: 22px;
+        height: 22px;
+        border-radius: 50%;
+        font-size: 14px;
+      }
+
+      .browser .tab .x {
+        margin-left: auto;
+        font-size: 13px;
+        color: #d5d5df;
+      }
+
+      .browser .newtab {
+        align-self: center;
+        margin-left: 14px;
+        font-size: 17px;
+        color: #d5d5df;
+      }
+
+      .browser .bar {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        height: 40px;
+        padding: 0 16px;
+        color: #b9b9c6;
+      }
+
+      .browser .bar > .ic {
+        font-size: 18px;
+      }
+
+      .browser .url {
+        display: flex;
+        align-items: center;
+        gap: 9px;
+        flex: 1;
+        height: 29px;
+        padding: 0 13px;
+        border-radius: 15px;
+        background: #22222c;
+        font-size: 14px;
+        color: #ececf3;
+      }
+
+      .browser .url .ic {
+        font-size: 13px;
+        color: #b9b9c6;
+      }
+
+      .browser .page {
+        height: 359px;
+        background: linear-gradient(180deg, #a3a1b9 0%, #bcbacd 45%, #dcdbe7 100%);
+      }
+
+      .menu {
+        position: absolute;
+        left: 458px;
+        top: 131px;
+        z-index: 4;
+        width: 280px;
+        padding: 8px 0;
+        border-radius: 12px;
+        background: #2a2a35;
+        box-shadow:
+          0 0 0 1px rgba(255, 255, 255, 0.08),
+          0 22px 50px rgba(8, 7, 30, 0.5);
+        font-size: 13.5px;
+        font-weight: 500;
+        color: #ececf3;
+      }
+
+      .menu .item {
+        position: relative;
+        display: flex;
+        align-items: center;
+        height: 24px;
+        padding-left: 56px;
+      }
+
+      .menu .item.short {
+        height: 22px;
+      }
+
+      .menu .item.off {
+        color: #777784;
+      }
+
+      .menu .item > .ic {
+        position: absolute;
+        left: 21px;
+        font-size: 16px;
+      }
+
+      .menu hr {
+        height: 1px;
+        margin: 6px 0;
+        border: 0;
+        background: rgba(255, 255, 255, 0.12);
+      }
+
+      .menu .item.ext {
+        height: 40px;
+        font-size: 11.6px;
+        line-height: 15px;
+        white-space: nowrap;
+      }
+
+      .menu .item.ext.one {
+        height: 30px;
+      }
+
+      .menu .item.ext .badge {
+        position: absolute;
+        left: 18px;
+        display: grid;
+        place-items: center;
+        width: 22px;
+        height: 22px;
+        border-radius: 5px;
+        color: #fff;
+        background: #7565ea;
+        font-size: 15px;
+      }
+
+      .menu .item.ext.on {
+        margin: 0 -40px 0 2px;
+        padding-left: 54px;
+        border-radius: 7px;
+        background: #5b4dc9;
+        box-shadow: 0 6px 18px rgba(60, 46, 170, 0.45);
+      }
+
+      .menu .item.ext.on .badge {
+        left: 16px;
+        background: #8576f2;
+      }
+
+      .menu-cursor {
+        left: 760px;
+        top: 324px;
+        font-size: 32px;
+      }
+
+      /* ---------- callouts ---------- */
+      .callout {
+        position: absolute;
+        z-index: 12;
+        display: grid;
+        place-items: center;
+        border-radius: 12px;
+        background: linear-gradient(180deg, #6c5ce2, #5648c8);
+        box-shadow: 0 12px 28px rgba(10, 6, 50, 0.5);
+        font-weight: 700;
+        text-align: center;
+        color: #fff;
+      }
+
+      .callout.one {
+        left: 723px;
+        top: 201px;
+        width: 134px;
+        height: 60px;
+        font-size: 15.5px;
+        line-height: 20px;
+      }
+
+      .callout.two {
+        left: 1172px;
+        top: 327px;
+        width: 105px;
+        height: 46px;
+        border-radius: 10px;
+        font-size: 12.5px;
+        line-height: 16px;
+      }
+
+      .arrows {
+        position: absolute;
+        inset: 0;
+        z-index: 11;
+        width: 1280px;
+        height: 800px;
+        fill: none;
+        stroke: #a092fa;
+        stroke-width: 3.6;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+        pointer-events: none;
+      }
+
+      /* ---------- browser 2: toolbar + popup ---------- */
+      .window2 {
+        position: absolute;
+        left: 826px;
+        top: 6px;
+        z-index: 6;
+        width: 386px;
+        height: 474px;
+        border-radius: 14px;
+        background: #1b1b27;
+        box-shadow:
+          0 0 0 1px rgba(255, 255, 255, 0.1),
+          -22px 0 44px rgba(6, 5, 28, 0.45),
+          0 30px 70px rgba(6, 5, 30, 0.5);
+      }
+
+      .window2 .bar {
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        gap: 9px;
+        height: 54px;
+        padding: 0 16px 0 0;
+        overflow: hidden;
+        border-radius: 14px 14px 0 0;
+        background: #2f2f3d;
+      }
+
+      .window2 .omni {
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        align-self: center;
+        flex: 1;
+        height: 36px;
+        margin-left: -30px;
+        margin-right: 6px;
+        padding-right: 12px;
+        border-radius: 18px;
+        background: #20202b;
+        font-size: 23px;
+        color: #d5d5df;
+      }
+
+      .window2 .tool {
+        width: 40px;
+        height: 40px;
+        font-size: 23px;
+      }
+
+      .window2 .avatar {
+        width: 36px;
+        height: 36px;
+        margin-left: 4px;
+        font-size: 30px;
+      }
+
+      .popup {
+        position: absolute;
+        left: 19px;
+        top: 52px;
+        width: calc(360px * var(--popup-scale));
+        height: calc(455px * var(--popup-scale));
+        overflow: hidden;
+        border-radius: 13px;
+        box-shadow:
+          0 0 0 1px rgba(255, 255, 255, 0.16),
+          0 22px 50px rgba(4, 3, 22, 0.6);
+      }
+
+      .popup iframe {
+        display: block;
+        width: 360px;
+        height: 455px;
+        border: 0;
+        transform: scale(var(--popup-scale));
+        transform-origin: 0 0;
+      }
+
+      /* ---------- feature cards ---------- */
+      .card {
+        position: absolute;
+        top: 509px;
+        height: 257px;
+        overflow: hidden;
+        border: 1.5px solid rgba(160, 150, 255, 0.3);
+        border-radius: 22px;
+        background: linear-gradient(180deg, rgba(15, 14, 40, 0.82), rgba(14, 13, 38, 0.66));
+        box-shadow:
+          inset 0 1px 0 rgba(255, 255, 255, 0.06),
+          0 22px 44px rgba(5, 4, 25, 0.3);
+      }
+
+      .card.move {
+        left: 28px;
+        width: 402px;
+      }
+
+      .card.merge {
+        left: 444px;
+        width: 436px;
+      }
+
+      .card.jump {
+        left: 894px;
+        width: 364px;
+      }
+
+      .card .num {
+        position: absolute;
+        left: 22px;
+        top: 13px;
+        display: grid;
+        place-items: center;
+        width: 37px;
+        height: 37px;
+        border-radius: 50%;
+        background: linear-gradient(160deg, #b9aefc, #988af4);
+        font-size: 20px;
+        font-weight: 700;
+        color: #1c1840;
+      }
+
+      .card h3 {
+        position: absolute;
+        left: 84px;
+        top: 15px;
+        margin: 0;
+        font-size: 23px;
+        font-weight: 700;
+        letter-spacing: -0.01em;
+        line-height: 28px;
+        white-space: nowrap;
+      }
+
+      .card h3 small {
+        font-size: inherit;
+        color: #d3ceef;
+      }
+
+      .card .desc {
+        position: absolute;
+        left: 84px;
+        top: 47px;
+        margin: 0;
+        font-size: 16px;
+        line-height: 21px;
+        white-space: nowrap;
+        color: #cfcde6;
+      }
+
+      /* card 1 */
+      .domain-box {
+        position: absolute;
+        left: 22px;
+        top: 103px;
+        width: 356px;
+        height: 138px;
+        padding: 14px;
+        border-radius: 14px;
+        background: rgba(255, 255, 255, 0.075);
+      }
+
+      .domain-box .who {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        height: 42px;
+        padding-left: 6px;
+      }
+
+      .domain-box .site-tile {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        font-size: 33px;
+      }
+
+      .domain-box strong {
+        display: block;
+        font-size: 18.5px;
+        font-weight: 700;
+        letter-spacing: -0.01em;
+        line-height: 23px;
+      }
+
+      .domain-box .who div span {
+        font-size: 14.5px;
+        color: #aaa7c6;
+      }
+
+      .domain-box .btns {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+        margin-top: 14px;
+      }
+
+      .domain-box .btns span {
+        display: grid;
+        place-items: center;
+        height: 54px;
+        border-radius: 11px;
+        background: linear-gradient(180deg, #8171f3, #6f5fe6);
+        box-shadow: 0 8px 20px rgba(109, 92, 232, 0.35);
+        font-size: 16.5px;
+        font-weight: 600;
+        color: #fff;
+      }
+
+      /* card 2 */
+      .merge-btn {
+        position: absolute;
+        left: 62px;
+        top: 96px;
+        z-index: 3;
+        display: flex;
+        align-items: center;
+        gap: 18px;
+        width: 322px;
+        height: 57px;
+        padding-left: 34px;
+        border: 1.5px solid rgba(180, 168, 255, 0.72);
+        border-radius: 13px;
+        background: linear-gradient(180deg, rgba(48, 42, 104, 0.92), rgba(36, 31, 84, 0.92));
+        box-shadow:
+          0 0 26px rgba(139, 124, 246, 0.5),
+          inset 0 0 16px rgba(139, 124, 246, 0.18);
+      }
+
+      .merge-btn > .ic {
+        font-size: 27px;
+        color: var(--accent-strong);
+      }
+
+      .merge-btn strong {
+        display: block;
+        font-size: 17px;
+        font-weight: 700;
+        line-height: 21px;
+      }
+
+      .merge-btn span {
+        font-size: 12.2px;
+        white-space: nowrap;
+        color: #b9b6d2;
+      }
+
+      .card.merge .sparks {
+        left: 392px;
+        top: 66px;
+        font-size: 30px;
+      }
+
+      .mini {
+        position: absolute;
+        overflow: hidden;
+        border-radius: 10px 10px 0 0;
+      }
+
+      .mini .top {
+        position: relative;
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        height: 18px;
+        padding-left: 9px;
+        background: rgba(122, 118, 164, 0.8);
+      }
+
+      .mini .top i {
+        width: 5.5px;
+        height: 5.5px;
+        border-radius: 50%;
+      }
+
+      .mini .top i:nth-child(1) {
+        background: #ff5f57;
+      }
+      .mini .top i:nth-child(2) {
+        background: #febc2e;
+      }
+      .mini .top i:nth-child(3) {
+        background: #28c840;
+      }
+
+      .mini .top::after {
+        content: "";
+        position: absolute;
+        left: 30%;
+        bottom: 0;
+        width: 44%;
+        height: 11px;
+        border-radius: 6px 6px 0 0;
+        background: rgba(182, 178, 212, 0.92);
+      }
+
+      .mini .sites {
+        display: flex;
+        align-items: flex-start;
+        justify-content: center;
+        gap: 18px;
+        height: 100%;
+        padding-top: 14px;
+        background: linear-gradient(180deg, rgba(182, 178, 212, 0.92), rgba(150, 144, 200, 0.7));
+        font-size: 27px;
+      }
+
+      .mini.a {
+        left: 22px;
+        top: 174px;
+        width: 146px;
+        height: 90px;
+      }
+
+      .mini.b {
+        left: 288px;
+        top: 174px;
+        width: 140px;
+        height: 90px;
+      }
+
+      .mini-glow {
+        position: absolute;
+        left: 132px;
+        top: 214px;
+        width: 186px;
+        height: 60px;
+        border-radius: 16px;
+        background: rgba(139, 124, 246, 0.6);
+        filter: blur(18px);
+      }
+
+      .mini.front {
+        left: 143px;
+        top: 229px;
+        width: 164px;
+        height: 40px;
+        border: 2px solid rgba(232, 226, 255, 0.95);
+        border-bottom: 0;
+        border-radius: 11px 11px 0 0;
+      }
+
+      .mini.front .top {
+        background: rgba(200, 193, 242, 0.96);
+      }
+
+      .mini.front .top::after {
+        background: rgba(232, 227, 255, 0.98);
+      }
+
+      .flow {
+        position: absolute;
+        inset: 0;
+        z-index: 2;
+        width: 100%;
+        height: 100%;
+        fill: none;
+        stroke: #7d6df2;
+        stroke-width: 5;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+        filter: drop-shadow(0 0 6px rgba(125, 109, 242, 0.5));
+      }
+
+      .flow circle {
+        fill: #2b2568;
+        stroke-width: 4.5;
+      }
+
+      /* card 3 */
+      .list {
+        position: absolute;
+        left: 34px;
+        top: 103px;
+        width: 284px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 13px;
+        background: rgba(255, 255, 255, 0.035);
+      }
+
+      .list .line {
+        display: flex;
+        white-space: nowrap;
+        align-items: center;
+        gap: 13px;
+        height: 45px;
+        padding: 0 15px 0 12px;
+        font-size: 15.5px;
+        font-weight: 600;
+        color: #ebe9f8;
+      }
+
+      .list .line.on {
+        border-radius: 12px;
+        background: rgba(139, 124, 246, 0.32);
+      }
+
+      .list .mark {
+        display: grid;
+        place-items: center;
+        width: 28px;
+        height: 28px;
+        font-size: 25px;
+      }
+
+      .list .site-tile {
+        width: 28px;
+        height: 28px;
+        border-radius: 7px;
+        font-size: 21px;
+      }
+
+      .list .count {
+        margin-left: auto;
+        font-size: 15px;
+        font-weight: 500;
+        color: #a092f8;
+      }
+
+      .card.jump .cursor {
+        left: 320px;
+        top: 136px;
+        font-size: 34px;
+      }
+
+      .card.jump .sparks {
+        left: 322px;
+        top: 110px;
+        font-size: 28px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="stage">
+      <!-- hero copy -->
+      <div class="brand">
+        <div class="app-tile"><i class="ic" data-icon="grid"></i></div>
+        <h1>Tab Split &amp;<span>Merger <i class="ic" data-icon="globe"></i></span></h1>
+      </div>
+      <p class="tagline">Organize your tabs.<br />Boost your productivity.</p>
+      <svg class="squiggle" viewBox="0 0 100 22">
+        <path d="M3 13C28 4 62 2 97 8"></path>
+        <path d="M22 16c14-6 30-8 46-7"></path>
+      </svg>
+      <ul class="checks">
+        <li><i class="ic" data-icon="check"></i>Move tabs by domain</li>
+        <li><i class="ic" data-icon="check"></i>Merge all windows</li>
+        <li><i class="ic" data-icon="check"></i>Quick switch between windows</li>
+      </ul>
+
+      <!-- browser 1: page with the extension's context-menu actions -->
+      <div class="browser">
+        <div class="tabbar">
+          <div class="traffic"><i></i><i></i><i></i></div>
+          <div class="tab">
+            <span class="site-tile"><i class="ic" data-icon="google"></i></span>
+            Google
+            <i class="ic x" data-icon="close"></i>
+          </div>
+          <i class="ic newtab" data-icon="plus"></i>
+        </div>
+        <div class="bar">
+          <i class="ic" data-icon="back"></i>
+          <i class="ic" data-icon="forward"></i>
+          <i class="ic" data-icon="reload"></i>
+          <div class="url"><i class="ic" data-icon="lock"></i>https://www.google.com</div>
+        </div>
+        <div class="page"></div>
+      </div>
+
+      <div class="menu">
+        <div class="item"><i class="ic" data-icon="back"></i>Back</div>
+        <div class="item off"><i class="ic" data-icon="forward"></i>Forward</div>
+        <div class="item"><i class="ic" data-icon="reload"></i>Reload</div>
+        <hr />
+        <div class="item short">Save As…</div>
+        <div class="item short">Print…</div>
+        <div class="item short">Cast…</div>
+        <hr />
+        <div class="item ext on">
+          <span class="badge"><i class="ic" data-icon="grid"></i></span>
+          Move this domain's tabs to a new window<br />(Current Window)
+        </div>
+        <div class="item ext">
+          <span class="badge"><i class="ic" data-icon="grid"></i></span>
+          Move this domain's tabs to a new window<br />(All Windows)
+        </div>
+        <div class="item ext one">
+          <span class="badge"><i class="ic" data-icon="grid"></i></span>
+          Merge all windows to current
+        </div>
+        <hr />
+        <div class="item">Inspect</div>
+      </div>
+      <i class="ic cursor menu-cursor" data-icon="cursor"></i>
+
+      <!-- browser 2: toolbar with the extension popup open -->
+      <div class="window2">
+        <div class="bar">
+          <div class="omni"><i class="ic" data-icon="star"></i></div>
+          <span class="tool pressed"><i class="ic" data-icon="grid"></i></span>
+          <span class="tool round"><i class="ic" data-icon="dots"></i></span>
+          <span class="avatar"><i class="ic" data-icon="person"></i></span>
+        </div>
+        <div class="popup">
+          <iframe id="popup" src="popup.html?data=cws&amp;theme=dark" title="Tab Split &amp; Merger popup"></iframe>
+        </div>
+      </div>
+
+      <!-- callouts -->
+      <div class="callout one">Context Menu<br />Actions</div>
+      <div class="callout two">Interactive<br />Window Preview</div>
+      <svg class="arrows" viewBox="0 0 1280 800">
+        <path d="M816 265c0 24-14 35-39 37"></path>
+        <path d="M789 292l-13 10 14 8"></path>
+        <path d="M1222 324c0-20-9-33-29-36"></path>
+        <path d="M1204 278l-12 9 12 10"></path>
+      </svg>
+
+      <!-- feature cards -->
+      <section class="card move">
+        <span class="num">1</span>
+        <h3>Move by Domain</h3>
+        <p class="desc">Quickly move tabs with the same domain<br />from your current window or all windows.</p>
+        <div class="domain-box">
+          <div class="who">
+            <span class="site-tile"><i class="ic" data-icon="chrome"></i></span>
+            <div>
+              <strong>chromewebstore.google.com</strong>
+              <span>5 matching tabs</span>
+            </div>
+          </div>
+          <div class="btns"><span>From this window</span><span>From all windows</span></div>
+        </div>
+      </section>
+
+      <section class="card merge">
+        <span class="num">2</span>
+        <h3>Merge All Windows</h3>
+        <p class="desc">Bring all your open tabs together<br />in one window.</p>
+
+        <div class="mini a">
+          <div class="top"><i></i><i></i><i></i></div>
+          <div class="sites">
+            <i class="ic" data-icon="youtube"></i><i class="ic" data-icon="github"></i><i class="ic" data-icon="gmail"></i>
+          </div>
+        </div>
+        <div class="mini b">
+          <div class="top"><i></i><i></i><i></i></div>
+          <div class="sites">
+            <i class="ic" data-icon="google" style="font-size: 24px; margin-top: 1px"></i><i class="ic" data-icon="notion"></i><i class="ic" data-icon="twitter"></i>
+          </div>
+        </div>
+        <svg class="flow" viewBox="0 0 436 257">
+          <path d="M146 190c16 24 40 24 58 26q21 3 21 14"></path>
+          <path d="M288 214c-18 0-36-1-46 2q-17 4-17 14"></path>
+          <path d="M225 230v-66"></path>
+          <path d="M211 176l14-15 14 15"></path>
+          <circle cx="143" cy="187" r="6"></circle>
+        </svg>
+        <div class="mini-glow"></div>
+        <div class="mini front"><div class="top"><i></i><i></i><i></i></div></div>
+
+        <div class="merge-btn">
+          <i class="ic" data-icon="merge"></i>
+          <div>
+            <strong>Merge All Windows</strong>
+            <span>Move 4 tabs from 2 other windows here</span>
+          </div>
+        </div>
+        <i class="ic sparks" data-icon="sparks"></i>
+      </section>
+
+      <section class="card jump">
+        <span class="num">3</span>
+        <h3>Quick Jump <small>(Focus)</small></h3>
+        <p class="desc">Click any window to instantly<br />switch to it.</p>
+        <div class="list">
+          <div class="line on">
+            <span class="site-tile"><i class="ic" data-icon="chrome"></i></span>
+            Window 1 (current)
+            <span class="count">14 tabs</span>
+          </div>
+          <div class="line">
+            <span class="mark"><i class="ic" data-icon="youtube"></i></span>
+            Window 2
+            <span class="count">3 tabs</span>
+          </div>
+          <div class="line">
+            <span class="mark"><i class="ic" data-icon="facebook"></i></span>
+            Window 3
+            <span class="count">1 tab</span>
+          </div>
+        </div>
+        <i class="ic sparks" data-icon="sparks"></i>
+        <i class="ic cursor" data-icon="cursor"></i>
+      </section>
+    </div>
+
+    <script src="promo.js"></script>
+    <script>
+      // Fit the popup frame to the real popup height, then flag the page as ready.
+      const frame = document.getElementById("popup");
+      const scale = parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--popup-scale"));
+      const timer = setInterval(async () => {
+        const doc = frame.contentDocument;
+        if (doc?.documentElement?.dataset.ready !== "true") return;
+        clearInterval(timer);
+        const height = doc.body.offsetHeight;
+        frame.style.height = height + "px";
+        frame.parentElement.style.height = height * scale + "px";
+        await document.fonts.ready;
+        document.documentElement.dataset.ready = "true";
+      }, 30);
+    </script>
+  </body>
+</html>
