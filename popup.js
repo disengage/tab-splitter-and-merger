@@ -73,18 +73,19 @@ async function renderWindows() {
   }
 
   windows.forEach((win, index) => {
-    const item = document.createElement("button");
-    item.type = "button";
+    const isCurrent = win.id === currentWindow.id;
+    const item = document.createElement("div");
     item.className = "window-item";
-    if (win.id === currentWindow.id) {
-      item.classList.add("is-current");
-    }
-
-    item.dataset.windowId = win.id;
+    if (isCurrent) item.classList.add("is-current");
 
     const activeTab = win.tabs.find((t) => t.active) || win.tabs[0];
     const faviconUrl = activeTab ? activeTab.favIconUrl : "icons/icon16.png";
     const tabTitle = activeTab?.title || "Untitled tab";
+
+    const main = document.createElement("button");
+    main.type = "button";
+    main.className = "window-main";
+    main.setAttribute("aria-label", `Focus window ${index + 1}`);
 
     const img = document.createElement("img");
     img.src = faviconUrl || "icons/icon16.png";
@@ -98,10 +99,9 @@ async function renderWindows() {
     details.className = "details";
 
     const strong = document.createElement("strong");
-    strong.textContent =
-      win.id === currentWindow.id
-        ? `Window ${index + 1} (current)`
-        : `Window ${index + 1}`;
+    strong.textContent = isCurrent
+      ? `Window ${index + 1} (current)`
+      : `Window ${index + 1}`;
 
     const meta = document.createElement("span");
     meta.className = "meta";
@@ -114,18 +114,71 @@ async function renderWindows() {
     badge.className = "tab-badge";
     badge.textContent = `${win.tabs.length} tab${win.tabs.length === 1 ? "" : "s"}`;
 
-    item.appendChild(img);
-    item.appendChild(details);
-    item.appendChild(badge);
-
-    item.addEventListener("click", async () => {
-      await chrome.windows.update(parseInt(item.dataset.windowId, 10), {
-        focused: true,
-      });
+    main.append(img, details, badge);
+    main.addEventListener("click", async () => {
+      await chrome.windows.update(win.id, { focused: true });
     });
+    item.appendChild(main);
+
+    if (!isCurrent) {
+      const blocked = win.incognito !== currentWindow.incognito;
+      const blockedTitle = "Can't move tabs between normal and private windows";
+      const actions = document.createElement("div");
+      actions.className = "window-actions";
+      actions.append(
+        createRowAction(
+          "Move",
+          blocked ? blockedTitle : "Move this tab here",
+          blocked,
+          () => sendCurrentTabTo(win.id),
+        ),
+        createRowAction(
+          "Merge",
+          blocked ? blockedTitle : "Merge into this window",
+          blocked,
+          () => mergeWindowIntoCurrent(win.id),
+        ),
+      );
+      item.appendChild(actions);
+    }
 
     windowList.appendChild(item);
   });
+}
+
+function createRowAction(label, title, disabled, onClick) {
+  const button = document.createElement("button");
+  button.type = "button";
+  button.textContent = label;
+  button.title = title;
+  button.disabled = disabled;
+  button.addEventListener("click", (event) => {
+    event.stopPropagation();
+    if (button.disabled) return;
+    onClick();
+  });
+  return button;
+}
+
+async function sendCurrentTabTo(targetWindowId) {
+  const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+  if (!tab) return;
+  chrome.runtime.sendMessage(
+    { action: "moveTab", tabId: tab.id, targetWindowId },
+    () => window.close(),
+  );
+}
+
+async function mergeWindowIntoCurrent(sourceWindowId) {
+  const currentWindow = await chrome.windows.getCurrent();
+  chrome.runtime.sendMessage(
+    {
+      action: "merge",
+      windowId: currentWindow.id,
+      sourceWindowIds: [sourceWindowId],
+    },
+    () => window.close(),
+  );
 }
 
 document.getElementById("btn-merge").addEventListener("click", async () => {

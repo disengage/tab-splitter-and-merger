@@ -1,0 +1,994 @@
+<!doctype html>
+<!--
+  1280x800 Chrome Web Store screenshot scene: macOS desktop + browser window +
+  sample page, with the REAL popup (popup.html mock) overlaid under the toolbar icon.
+  Light/dark follows prefers-color-scheme (emulated by capture.mjs).
+-->
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Screenshot scene</title>
+    <style>
+      :root {
+        --font: -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", sans-serif;
+
+        /* desktop */
+        --wallpaper:
+          radial-gradient(90% 120% at 0% 0%, #c7beff 0%, transparent 55%),
+          radial-gradient(80% 100% at 100% 0%, #ffd0e4 0%, transparent 55%),
+          radial-gradient(90% 110% at 60% 100%, #a9d2ff 0%, transparent 60%), #dcd6f7;
+        --menubar-bg: rgba(255, 255, 255, 0.38);
+        --menubar-ink: #17171c;
+
+        /* browser chrome */
+        --frame: #dee1e6;
+        --toolbar: #ffffff;
+        --omnibox: #f1f3f4;
+        --chrome-ink: #202124;
+        --chrome-icon: #5f6368;
+        --chrome-icon-off: #b9bdc2;
+        --chrome-line: #dadce0;
+        --tab-sep: rgba(0, 0, 0, 0.22);
+        --pressed: rgba(0, 0, 0, 0.09);
+        --window-shadow: 0 0 0 0.5px rgba(0, 0, 0, 0.28), 0 28px 60px rgba(40, 30, 90, 0.35);
+
+        /* popup bubble */
+        --bubble-border: rgba(20, 22, 40, 0.14);
+        --bubble-shadow: 0 18px 48px rgba(24, 20, 60, 0.28), 0 3px 10px rgba(24, 20, 60, 0.12);
+
+        /* sample page */
+        --page: #f5f5fa;
+        --side: #ffffff;
+        --card: #ffffff;
+        --ink: #1a1b26;
+        --muted: #6a7084;
+        --faint: #9aa0b2;
+        --line: #e6e6ef;
+        --accent: #6d5ce8;
+        --accent-soft: rgba(109, 92, 232, 0.1);
+        --accent-2: #a99ff5;
+        --green: #2fb574;
+        color-scheme: light;
+      }
+
+      @media (prefers-color-scheme: dark) {
+        :root {
+          --wallpaper:
+            radial-gradient(90% 120% at 0% 0%, #2c2070 0%, transparent 55%),
+            radial-gradient(80% 100% at 100% 0%, #561c52 0%, transparent 55%),
+            radial-gradient(90% 110% at 60% 100%, #10305f 0%, transparent 60%), #0d0b1e;
+          --menubar-bg: rgba(10, 8, 24, 0.35);
+          --menubar-ink: #f4f4f8;
+
+          --frame: #202124;
+          --toolbar: #35363a;
+          --omnibox: #202124;
+          --chrome-ink: #e8eaed;
+          --chrome-icon: #c4c7cc;
+          --chrome-icon-off: #6f7378;
+          --chrome-line: #2a2b2f;
+          --tab-sep: rgba(255, 255, 255, 0.24);
+          --pressed: rgba(255, 255, 255, 0.16);
+          --window-shadow: 0 0 0 0.5px rgba(255, 255, 255, 0.18), 0 28px 60px rgba(0, 0, 0, 0.6);
+
+          --bubble-border: rgba(255, 255, 255, 0.14);
+          --bubble-shadow: 0 18px 48px rgba(0, 0, 0, 0.6), 0 3px 10px rgba(0, 0, 0, 0.4);
+
+          --page: #111219;
+          --side: #161720;
+          --card: #1b1d28;
+          --ink: #eceef3;
+          --muted: #8b93a5;
+          --faint: #626a7b;
+          --line: rgba(255, 255, 255, 0.08);
+          --accent: #8b7cf6;
+          --accent-soft: rgba(139, 124, 246, 0.16);
+          --accent-2: #6a5fc4;
+          --green: #35c482;
+          color-scheme: dark;
+        }
+        .only-light {
+          display: none !important;
+        }
+      }
+
+      @media (prefers-color-scheme: light) {
+        .only-dark {
+          display: none !important;
+        }
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html,
+      body {
+        margin: 0;
+        width: 1280px;
+        height: 800px;
+        overflow: hidden;
+      }
+
+      body {
+        position: relative;
+        font-family: var(--font);
+        background: var(--wallpaper);
+        -webkit-font-smoothing: antialiased;
+      }
+
+      svg {
+        display: block;
+        fill: none;
+        stroke: currentColor;
+        stroke-width: 2;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+      }
+
+      /* ---------- macOS menu bar ---------- */
+      .menubar {
+        position: absolute;
+        inset: 0 0 auto 0;
+        height: 28px;
+        display: flex;
+        align-items: center;
+        gap: 18px;
+        padding: 0 16px;
+        font-size: 13.5px;
+        font-weight: 500;
+        color: var(--menubar-ink);
+        background: var(--menubar-bg);
+      }
+
+      .menubar .apple {
+        font-size: 17px;
+        line-height: 1;
+        margin-top: -2px;
+      }
+
+      .menubar .app {
+        font-weight: 700;
+      }
+
+      .menubar .spacer {
+        flex: 1;
+      }
+
+      .menubar svg {
+        width: 17px;
+        height: 17px;
+        stroke-width: 1.9;
+      }
+
+      .menubar .battery {
+        width: 25px;
+      }
+
+      /* ---------- browser window ---------- */
+      .window {
+        position: absolute;
+        left: 16px;
+        top: 40px;
+        width: 1248px;
+        height: 746px;
+        border-radius: 12px;
+        overflow: hidden;
+        background: var(--page);
+        box-shadow: var(--window-shadow);
+      }
+
+      .tabstrip {
+        display: flex;
+        align-items: flex-end;
+        height: 42px;
+        padding: 0 8px 0 0;
+        background: var(--frame);
+        color: var(--chrome-ink);
+      }
+
+      .lights {
+        display: flex;
+        gap: 8px;
+        align-self: center;
+        width: 82px;
+        padding-left: 14px;
+        flex-shrink: 0;
+      }
+
+      .lights i {
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        box-shadow: inset 0 0 0 0.5px rgba(0, 0, 0, 0.18);
+      }
+
+      .lights i:nth-child(1) {
+        background: #ff5f57;
+      }
+      .lights i:nth-child(2) {
+        background: #febc2e;
+      }
+      .lights i:nth-child(3) {
+        background: #28c840;
+      }
+
+      .tabs {
+        display: flex;
+        flex: 1;
+        min-width: 0;
+        height: 34px;
+      }
+
+      .tab {
+        position: relative;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        flex: 1 1 0;
+        min-width: 0;
+        padding: 0 10px;
+        font-size: 12px;
+        border-radius: 9px 9px 0 0;
+      }
+
+      .tab + .tab:not(.active)::before {
+        content: "";
+        position: absolute;
+        left: 0;
+        top: 9px;
+        height: 16px;
+        width: 1px;
+        background: var(--tab-sep);
+      }
+
+      .tab.active + .tab::before {
+        display: none;
+      }
+
+      .tab.active {
+        flex: 0 0 214px;
+        background: var(--toolbar);
+      }
+
+      .tab .title {
+        flex: 1;
+        min-width: 0;
+        white-space: nowrap;
+        overflow: hidden;
+        -webkit-mask-image: linear-gradient(90deg, #000 calc(100% - 16px), transparent);
+        mask-image: linear-gradient(90deg, #000 calc(100% - 16px), transparent);
+      }
+
+      .tab .close {
+        width: 14px;
+        height: 14px;
+        flex-shrink: 0;
+        color: var(--chrome-icon);
+      }
+
+      .fav {
+        display: grid;
+        place-items: center;
+        width: 16px;
+        height: 16px;
+        flex-shrink: 0;
+        border-radius: 4px;
+        font-size: 10px;
+        font-weight: 700;
+        line-height: 1;
+        color: #fff;
+      }
+
+      svg.fav {
+        border-radius: 0;
+        stroke: none;
+      }
+
+      .strip-btn {
+        display: grid;
+        place-items: center;
+        align-self: center;
+        width: 28px;
+        height: 28px;
+        flex-shrink: 0;
+        color: var(--chrome-icon);
+      }
+
+      .strip-btn svg {
+        width: 16px;
+        height: 16px;
+      }
+
+      .toolbar {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        height: 44px;
+        padding: 0 10px;
+        background: var(--toolbar);
+        border-bottom: 1px solid var(--chrome-line);
+        color: var(--chrome-ink);
+      }
+
+      .tool {
+        display: grid;
+        place-items: center;
+        width: 30px;
+        height: 30px;
+        flex-shrink: 0;
+        border-radius: 50%;
+        color: var(--chrome-icon);
+      }
+
+      .tool.off {
+        color: var(--chrome-icon-off);
+      }
+
+      .tool svg {
+        width: 18px;
+        height: 18px;
+      }
+
+      .tool.pressed {
+        background: var(--pressed);
+      }
+
+      .tool img {
+        display: block;
+        width: 16px;
+        height: 16px;
+      }
+
+      .omnibox {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        flex: 1;
+        height: 32px;
+        margin: 0 6px;
+        padding: 0 12px 0 11px;
+        border-radius: 16px;
+        background: var(--omnibox);
+        font-size: 13.5px;
+      }
+
+      .omnibox svg {
+        width: 16px;
+        height: 16px;
+        color: var(--chrome-icon);
+      }
+
+      .omnibox .url {
+        flex: 1;
+      }
+
+      .avatar {
+        display: grid;
+        place-items: center;
+        width: 24px;
+        height: 24px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #8b7cf6, #f08bb8);
+        color: #fff;
+        font-size: 11.5px;
+        font-weight: 700;
+      }
+
+      /* ---------- popup bubble ---------- */
+      .bubble {
+        position: absolute;
+        top: 83px;
+        right: 86px;
+        width: 362px;
+        border: 1px solid var(--bubble-border);
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: var(--bubble-shadow);
+        z-index: 5;
+      }
+
+      .bubble iframe {
+        display: block;
+        width: 360px;
+        height: 455px;
+        border: 0;
+      }
+
+      /* ---------- sample page: TodoFlow ---------- */
+      .page {
+        display: flex;
+        height: 659px;
+        color: var(--ink);
+        background: var(--page);
+      }
+
+      .side {
+        display: flex;
+        flex-direction: column;
+        width: 216px;
+        padding: 20px 14px 16px;
+        background: var(--side);
+        border-right: 1px solid var(--line);
+      }
+
+      .logo {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 0 6px;
+        margin-bottom: 22px;
+        font-size: 18px;
+        font-weight: 700;
+        letter-spacing: -0.01em;
+      }
+
+      .logo svg {
+        width: 30px;
+        height: 30px;
+        stroke: none;
+      }
+
+      .nav a {
+        display: flex;
+        align-items: center;
+        gap: 11px;
+        height: 36px;
+        padding: 0 10px;
+        margin-bottom: 2px;
+        border-radius: 9px;
+        font-size: 14px;
+        font-weight: 500;
+        color: var(--muted);
+      }
+
+      .nav a.on {
+        background: var(--accent-soft);
+        color: var(--accent);
+        font-weight: 600;
+      }
+
+      .nav svg {
+        width: 17px;
+        height: 17px;
+      }
+
+      .nav .n {
+        margin-left: auto;
+        padding: 1px 7px;
+        border-radius: 999px;
+        font-size: 11.5px;
+        font-weight: 600;
+        color: var(--muted);
+        background: var(--page);
+      }
+
+      .promo {
+        margin-top: auto;
+        padding: 14px;
+        border-radius: 12px;
+        background: var(--accent-soft);
+      }
+
+      .promo .rocket {
+        font-size: 26px;
+        line-height: 1;
+        margin-bottom: 8px;
+      }
+
+      .promo strong {
+        display: block;
+        font-size: 13.5px;
+        margin-bottom: 3px;
+      }
+
+      .promo p {
+        margin: 0 0 12px;
+        font-size: 12px;
+        line-height: 1.4;
+        color: var(--muted);
+      }
+
+      .btn {
+        display: grid;
+        place-items: center;
+        height: 32px;
+        border-radius: 8px;
+        background: var(--accent);
+        color: #fff;
+        font-size: 12.5px;
+        font-weight: 600;
+      }
+
+      .main {
+        flex: 1;
+        min-width: 0;
+        padding: 32px 34px;
+      }
+
+      h1 {
+        margin: 0;
+        font-size: 31px;
+        font-weight: 700;
+        letter-spacing: -0.02em;
+      }
+
+      .sub {
+        margin: 6px 0 0;
+        font-size: 14.5px;
+        color: var(--muted);
+      }
+
+      .search {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        width: 452px;
+        height: 42px;
+        margin-top: 20px;
+        padding: 0 16px;
+        border: 1px solid var(--line);
+        border-radius: 21px;
+        background: var(--card);
+        font-size: 14px;
+        color: var(--faint);
+      }
+
+      .search svg {
+        width: 16px;
+        height: 16px;
+      }
+
+      .cols {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) 412px;
+        gap: 28px;
+        margin-top: 30px;
+      }
+
+      h2 {
+        display: flex;
+        align-items: baseline;
+        gap: 10px;
+        margin: 0 0 8px;
+        font-size: 18px;
+        font-weight: 700;
+        letter-spacing: -0.01em;
+      }
+
+      h2 small {
+        font-size: 12.5px;
+        font-weight: 500;
+        color: var(--muted);
+      }
+
+      .task {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        height: 41px;
+        border-bottom: 1px solid var(--line);
+        font-size: 14px;
+      }
+
+      .task:last-child {
+        border-bottom: 0;
+      }
+
+      .task .box {
+        display: grid;
+        place-items: center;
+        width: 17px;
+        height: 17px;
+        flex-shrink: 0;
+        border: 1.5px solid var(--faint);
+        border-radius: 5px;
+      }
+
+      .task.done {
+        color: var(--faint);
+        text-decoration: line-through;
+      }
+
+      .task.done .box {
+        border-color: var(--accent);
+        background: var(--accent);
+        color: #fff;
+      }
+
+      .task .box svg {
+        width: 11px;
+        height: 11px;
+        stroke-width: 3.2;
+      }
+
+      .task .tag {
+        margin-left: auto;
+        padding: 2px 8px;
+        border-radius: 999px;
+        font-size: 11.5px;
+        font-weight: 600;
+        text-decoration: none;
+        color: var(--accent);
+        background: var(--accent-soft);
+      }
+
+      .card {
+        border: 1px solid var(--line);
+        border-radius: 14px;
+        background: var(--card);
+      }
+
+      .chart {
+        padding: 16px 18px;
+        height: 246px;
+      }
+
+      .chart-head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        font-size: 14px;
+        font-weight: 600;
+      }
+
+      .pill {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        height: 28px;
+        padding: 0 10px;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: var(--card);
+        font-size: 12.5px;
+        font-weight: 500;
+        color: var(--muted);
+      }
+
+      .pill svg {
+        width: 13px;
+        height: 13px;
+      }
+
+      .bars {
+        display: flex;
+        align-items: flex-end;
+        justify-content: space-between;
+        height: 164px;
+        margin-top: 20px;
+      }
+
+      .bars i {
+        width: 15px;
+        border-radius: 5px 5px 2px 2px;
+        background: var(--accent-2);
+      }
+
+      .bars i.hi {
+        background: var(--accent);
+      }
+
+      .projects-head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin: 28px 0 12px;
+      }
+
+      .projects-head h2 {
+        margin: 0;
+      }
+
+      .projects {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 16px;
+      }
+
+      .project {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        padding: 18px 16px;
+      }
+
+      .project .ico {
+        display: grid;
+        place-items: center;
+        width: 40px;
+        height: 40px;
+        flex-shrink: 0;
+        border-radius: 11px;
+        color: #fff;
+      }
+
+      .project .ico svg {
+        width: 19px;
+        height: 19px;
+      }
+
+      .project .info {
+        flex: 1;
+        min-width: 0;
+      }
+
+      .project strong {
+        display: block;
+        font-size: 14.5px;
+        font-weight: 600;
+      }
+
+      .project span {
+        font-size: 12.5px;
+        color: var(--muted);
+      }
+
+      .progress {
+        height: 5px;
+        margin-top: 9px;
+        border-radius: 999px;
+        background: var(--line);
+        overflow: hidden;
+      }
+
+      .progress i {
+        display: block;
+        height: 100%;
+        border-radius: 999px;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- macOS menu bar -->
+    <div class="menubar">
+      <span class="apple">&#xF8FF;</span>
+      <span class="app">Google Chrome</span>
+      <span>File</span>
+      <span>Edit</span>
+      <span>View</span>
+      <span>History</span>
+      <span>Bookmarks</span>
+      <span>Profiles</span>
+      <span>Tab</span>
+      <span>Window</span>
+      <span>Help</span>
+      <span class="spacer"></span>
+      <svg viewBox="0 0 24 24">
+        <path d="M2.5 9.5a14 14 0 0 1 19 0"></path>
+        <path d="M5.8 13a9.2 9.2 0 0 1 12.4 0"></path>
+        <path d="M9 16.4a4.6 4.6 0 0 1 6 0"></path>
+        <circle cx="12" cy="19.6" r="1.1" fill="currentColor" stroke="none"></circle>
+      </svg>
+      <svg class="battery" viewBox="0 0 34 24">
+        <rect x="2" y="6.5" width="26" height="11" rx="3.2" stroke-width="1.4" opacity="0.6"></rect>
+        <rect x="4" y="8.5" width="18" height="7" rx="1.6" fill="currentColor" stroke="none"></rect>
+        <path d="M30.5 10.3v3.4" stroke-width="2" opacity="0.6"></path>
+      </svg>
+      <svg viewBox="0 0 24 24">
+        <circle cx="10.5" cy="10.5" r="6.5"></circle>
+        <path d="m15.5 15.5 5 5"></path>
+      </svg>
+      <span class="only-light">Fri Nov 13&nbsp;&nbsp;3:42 PM</span>
+      <span class="only-dark">Fri Nov 13&nbsp;&nbsp;9:42 PM</span>
+    </div>
+
+    <div class="window">
+      <!-- tab strip: 14 tabs, 5 of them on todo.example.com -->
+      <div class="tabstrip">
+        <div class="lights"><i></i><i></i><i></i></div>
+        <div class="tabs" id="tabs"></div>
+        <div class="strip-btn">
+          <svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"></path></svg>
+        </div>
+        <div class="strip-btn" style="margin-left: auto">
+          <svg viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"></path></svg>
+        </div>
+      </div>
+
+      <div class="toolbar">
+        <div class="tool">
+          <svg viewBox="0 0 24 24"><path d="M19 12H5M11 6l-6 6 6 6"></path></svg>
+        </div>
+        <div class="tool off">
+          <svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"></path></svg>
+        </div>
+        <div class="tool">
+          <svg viewBox="0 0 24 24">
+            <path d="M20 12a8 8 0 1 1-2.34-5.66"></path>
+            <path d="M20 4v5h-5"></path>
+          </svg>
+        </div>
+        <div class="omnibox">
+          <svg viewBox="0 0 24 24">
+            <path d="M4 8h8M18 8h2M4 16h2M12 16h8"></path>
+            <circle cx="15" cy="8" r="2.4"></circle>
+            <circle cx="9" cy="16" r="2.4"></circle>
+          </svg>
+          <span class="url">todo.example.com</span>
+          <svg viewBox="0 0 24 24">
+            <path d="m12 3.5 2.6 5.3 5.9.9-4.25 4.1 1 5.8L12 16.9l-5.25 2.7 1-5.8L3.5 9.7l5.9-.9z"></path>
+          </svg>
+        </div>
+        <!-- the extension's real toolbar icon, shown pressed because its popup is open -->
+        <div class="tool pressed"><img src="/icons/icon16.png" alt="" /></div>
+        <div class="tool">
+          <svg viewBox="0 0 24 24">
+            <path d="M10 4.5a2 2 0 1 1 4 0V6h4a1 1 0 0 1 1 1v4h-1.5a2 2 0 1 0 0 4H19v4a1 1 0 0 1-1 1h-4v-1.5a2 2 0 1 0-4 0V20H6a1 1 0 0 1-1-1v-4h1.5a2 2 0 1 0 0-4H5V7a1 1 0 0 1 1-1h4z"></path>
+          </svg>
+        </div>
+        <div class="tool"><span class="avatar">D</span></div>
+        <div class="tool">
+          <svg viewBox="0 0 24 24" style="fill: currentColor; stroke: none">
+            <circle cx="12" cy="5" r="1.8"></circle>
+            <circle cx="12" cy="12" r="1.8"></circle>
+            <circle cx="12" cy="19" r="1.8"></circle>
+          </svg>
+        </div>
+      </div>
+
+      <!-- sample page -->
+      <div class="page">
+        <aside class="side">
+          <div class="logo">
+            <svg viewBox="0 0 24 24">
+              <path d="M12 1.8 20.8 6.9v10.2L12 22.2 3.2 17.1V6.9z" fill="var(--accent)"></path>
+              <path d="m8 12.2 2.8 2.8L16.2 9" fill="none" stroke="#fff" stroke-width="2.3"></path>
+            </svg>
+            TodoFlow
+          </div>
+          <nav class="nav">
+            <a class="on">
+              <svg viewBox="0 0 24 24"><path d="M3 10.5 12 3l9 7.5V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"></path></svg>
+              Home
+            </a>
+            <a>
+              <svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"></rect><path d="M3 10h18M8 3v4M16 3v4"></path></svg>
+              Today <span class="n">12</span>
+            </a>
+            <a>
+              <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg>
+              Upcoming <span class="n">28</span>
+            </a>
+            <a>
+              <svg viewBox="0 0 24 24"><path d="M3 7a2 2 0 0 1 2-2h4l2 2.5h8a2 2 0 0 1 2 2V18a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path></svg>
+              Projects
+            </a>
+            <a>
+              <svg viewBox="0 0 24 24"><path d="M5 20v-9M12 20V4M19 20v-6"></path></svg>
+              Analytics
+            </a>
+            <a>
+              <svg viewBox="0 0 24 24"><path d="M4 7h10M18 7h2M4 17h4M12 17h8"></path><circle cx="16" cy="7" r="2"></circle><circle cx="10" cy="17" r="2"></circle></svg>
+              Settings
+            </a>
+          </nav>
+          <div class="promo">
+            <div class="rocket">🚀</div>
+            <strong>Boost your productivity</strong>
+            <p>Get started with our new features.</p>
+            <div class="btn">Learn more</div>
+          </div>
+        </aside>
+
+        <main class="main">
+          <h1 class="only-light">Good afternoon! 👋</h1>
+          <h1 class="only-dark">Good evening! 🌙</h1>
+          <p class="sub only-light">Let's make today productive.</p>
+          <p class="sub only-dark">Stay focused. You've got this!</p>
+
+          <div class="search">
+            <svg viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="6.5"></circle><path d="m15.5 15.5 5 5"></path></svg>
+            Search tasks…
+          </div>
+
+          <div class="cols">
+            <section>
+              <h2>Today <small>12 tasks</small></h2>
+              <div class="task done">
+                <span class="box"><svg viewBox="0 0 24 24"><path d="m5 12.5 4.5 4.5L19 7.5"></path></svg></span>
+                Review design for new feature
+              </div>
+              <div class="task"><span class="box"></span>Update documentation <span class="tag">Docs</span></div>
+              <div class="task"><span class="box"></span>Plan next sprint</div>
+              <div class="task"><span class="box"></span>Team sync meeting <span class="tag">2:00 PM</span></div>
+              <div class="task"><span class="box"></span>Check analytics report</div>
+              <div class="task"><span class="box"></span>Reply to customer feedback</div>
+            </section>
+
+            <section class="card chart">
+              <div class="chart-head">
+                Completed tasks
+                <span class="pill">This Week <svg viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"></path></svg></span>
+              </div>
+              <div class="bars">
+                <i style="height: 34%"></i><i style="height: 52%"></i><i style="height: 41%"></i>
+                <i style="height: 66%"></i><i style="height: 48%"></i><i style="height: 58%"></i>
+                <i style="height: 39%"></i><i style="height: 72%"></i><i style="height: 55%"></i>
+                <i style="height: 63%"></i><i style="height: 78%"></i><i class="hi" style="height: 100%"></i>
+              </div>
+            </section>
+          </div>
+
+          <div class="projects-head">
+            <h2>Projects</h2>
+            <span class="pill">This Month <svg viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"></path></svg></span>
+          </div>
+          <div class="projects">
+            <div class="card project">
+              <span class="ico" style="background: var(--accent)">
+                <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="14" rx="2"></rect><path d="M8 21h8M12 18v3"></path></svg>
+              </span>
+              <div class="info">
+                <strong>Website Redesign</strong><span>24 tasks</span>
+                <div class="progress"><i style="width: 68%; background: var(--accent)"></i></div>
+              </div>
+            </div>
+            <div class="card project">
+              <span class="ico" style="background: var(--green)">
+                <svg viewBox="0 0 24 24"><rect x="7" y="2.5" width="10" height="19" rx="2.5"></rect><path d="M11 18h2"></path></svg>
+              </span>
+              <div class="info">
+                <strong>Mobile App</strong><span>18 tasks</span>
+                <div class="progress"><i style="width: 52%; background: var(--green)"></i></div>
+              </div>
+            </div>
+            <div class="card project">
+              <span class="ico" style="background: #e88a5c">
+                <svg viewBox="0 0 24 24"><path d="M4 10v4h3l6 4V6l-6 4z"></path><path d="M17 9.5a4 4 0 0 1 0 5"></path></svg>
+              </span>
+              <div class="info">
+                <strong>Marketing Campaign</strong><span>12 tasks</span>
+                <div class="progress"><i style="width: 38%; background: #e88a5c"></i></div>
+              </div>
+            </div>
+          </div>
+        </main>
+      </div>
+
+      <!-- extension popup (real popup.html + popup.js with sample data) -->
+      <div class="bubble">
+        <iframe id="popup" src="popup.html?data=todo" title="Tab Split &amp; Merger popup"></iframe>
+      </div>
+    </div>
+
+    <script>
+      // Tab strip: the current window's 14 tabs, 5 of them on todo.example.com.
+      const TODO_FAV =
+        '<svg class="fav" viewBox="0 0 24 24"><path d="M12 1.8 20.8 6.9v10.2L12 22.2 3.2 17.1V6.9z" fill="#6d5ce8"></path>' +
+        '<path d="m8 12.2 2.8 2.8L16.2 9" fill="none" stroke="#fff" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"></path></svg>';
+      const letter = (char, color) => `<span class="fav" style="background:${color}">${char}</span>`;
+      const CLOSE = '<svg class="close" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"></path></svg>';
+      const TABS = [
+        [TODO_FAV, "TodoFlow – Productivity Dashboard", true],
+        [letter("M", "#e25950"), "Inbox (4)"],
+        [TODO_FAV, "Today – TodoFlow"],
+        [letter("D", "#3b82f6"), "Q4 roadmap"],
+        [TODO_FAV, "Projects – TodoFlow"],
+        [letter("C", "#0ea5a4"), "Calendar"],
+        [letter("W", "#64748b"), "Team wiki"],
+        [TODO_FAV, "Upcoming – TodoFlow"],
+        [letter("N", "#f59e0b"), "Meeting notes"],
+        [letter("F", "#db2777"), "Design file"],
+        [TODO_FAV, "Analytics – TodoFlow"],
+        [letter("R", "#16a34a"), "Weekly report"],
+        [letter("H", "#111827"), "Pull requests"],
+        [letter("S", "#7c3aed"), "Standup"],
+      ];
+      document.getElementById("tabs").innerHTML = TABS.map(
+        ([fav, title, active]) =>
+          `<div class="tab${active ? " active" : ""}">${fav}<span class="title">${title}</span>${active ? CLOSE : ""}</div>`,
+      ).join("");
+
+      // Size the popup iframe to its content, then flag the scene as ready.
+      const frame = document.getElementById("popup");
+      const timer = setInterval(() => {
+        const doc = frame.contentDocument;
+        if (doc?.documentElement?.dataset.ready !== "true") return;
+        clearInterval(timer);
+        frame.style.height = doc.body.offsetHeight + "px";
+        document.documentElement.dataset.ready = "true";
+      }, 30);
+    </script>
+  </body>
+</html>
